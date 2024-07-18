@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://${DATASOURCE_HOST:127.0.0.1:3306}/${DATASOURCE_NAME:lucky-journey}?serverTimezone=GMT%2B8
+    username: ${DATASOURCE_USER:root}
+    password: ${DATASOURCE_PASSWORD:root}
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: ${MAIL_NAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password:
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+qiniu:
+  kodo:
+    access-key: ${QINIU_KODO_ACCESS}
+    secret-key: ${QINIU_KODO_SECRET}
+    bucket-name: ${QINIU_KODO_BUCKET}
+server:
+  port: ${SERVER_PORT:8882}
