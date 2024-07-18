@@ -5,6 +5,7 @@ import cn.zhoutaolinmusic.entity.response.UserLoginRes;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.service.LoginService;
+import cn.zhoutaolinmusic.utils.JwtUtils;
 import cn.zhoutaolinmusic.utils.Result;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,15 @@ public class LoginController {
     public Result<UserLoginRes> login(@RequestBody User user) {
         user = this.loginService.login(user);
         log.info("用户登录成功 {}", user);
-        return null;
+
+        UserLoginRes userLoginRes = new UserLoginRes();
+        // 保存 token 信息
+        String token = JwtUtils.getJwtToken(user.getId(), user.getNickName());
+        userLoginRes.setToken(token);
+        userLoginRes.setUser(user);
+        userLoginRes.setName(user.getNickName());
+
+        return Result.ok(userLoginRes);
     }
 
     /**
