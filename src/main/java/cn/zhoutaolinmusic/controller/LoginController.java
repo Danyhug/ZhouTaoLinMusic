@@ -9,6 +9,7 @@ import cn.zhoutaolinmusic.utils.JwtUtils;
 import cn.zhoutaolinmusic.utils.Result;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("")
-    public Result<UserLoginRes> login(@RequestBody User user) {
+    public Result<UserLoginRes> login(@RequestBody @Validated User user) {
         user = this.loginService.login(user);
         log.info("用户登录成功 {}", user);
 
@@ -43,7 +44,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/register")
-    public Result<String> register(@RequestBody RegisterVO registerVO) throws Exception {
+    public Result<String> register(@RequestBody @Validated RegisterVO registerVO) throws Exception {
         if (!loginService.register(registerVO)) {
             return Result.error("注册失败，验证码有误");
         }
@@ -68,7 +69,7 @@ public class LoginController {
      * @throws Exception
      */
     @PostMapping("/getCode")
-    public Result<String> getCode(@RequestBody Captcha captcha) throws Exception {
+    public Result<String> getCode(@RequestBody @Validated Captcha captcha) throws Exception {
         if (loginService.getCode(captcha)) {
             return Result.ok("发送成功,请耐心等待");
         }
