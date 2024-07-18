@@ -12,9 +12,11 @@ import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -92,7 +94,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Boolean findPassword(FindPWVO findPWVO) {
-        return null;
+        // 判断验证码是否正确
+        Object o = redisCacheUtil.get(RedisConstant.EMAIL_CODE + findPWVO.getEmail());
+        if (ObjectUtils.isEmpty(o)) {
+            return false;
+        }
+
+        // 验证码不一致
+        if (findPWVO.getCode() != Integer.parseInt(o.toString())) {
+            return false;
+        }
+
+        // 更新用户密码
+        User user = new User();
+        user.setEmail(findPWVO.getEmail());
+        user.setPassword(findPWVO.getNewPassword());
+        this.update(user, new UpdateWrapper<User>().lambda().set(User::getPassword, user.getPassword()).eq(User::getEmail, user.getEmail()));
+        return true;
     }
 
     // @Override

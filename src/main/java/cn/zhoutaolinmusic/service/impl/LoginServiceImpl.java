@@ -1,16 +1,21 @@
 package cn.zhoutaolinmusic.service.impl;
 
+import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.Captcha;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.exception.BaseException;
+import cn.zhoutaolinmusic.mapper.CaptchaMapper;
 import cn.zhoutaolinmusic.service.CaptchaService;
 import cn.zhoutaolinmusic.service.LoginService;
 import cn.zhoutaolinmusic.service.user.UserService;
+import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -28,6 +33,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private CaptchaService captchaService;
+    @Autowired
+    private RedisCacheUtil redisCacheUtil;
 
     @Override
     public User login(User user) throws BaseException {
@@ -48,7 +55,16 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean checkCode(String email, Integer code) {
-        return null;
+        if (ObjectUtils.isEmpty(code) || ObjectUtils.isEmpty(email)) {
+            throw new BaseException("参数不能为空");
+        }
+
+        Object o = redisCacheUtil.get(RedisConstant.EMAIL_CODE + email);
+        if (ObjectUtils.isEmpty(o)) {
+            return false;
+        }
+
+        return code.toString().equals(o);
     }
 
     @Override
@@ -89,6 +105,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean findPassword(FindPWVO findPWVO) {
-        return null;
+        return userService.findPassword(findPWVO);
     }
 }

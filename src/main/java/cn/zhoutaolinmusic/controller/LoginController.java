@@ -3,6 +3,7 @@ package cn.zhoutaolinmusic.controller;
 import cn.zhoutaolinmusic.entity.Captcha;
 import cn.zhoutaolinmusic.entity.response.UserLoginRes;
 import cn.zhoutaolinmusic.entity.user.User;
+import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.service.LoginService;
 import cn.zhoutaolinmusic.utils.JwtUtils;
@@ -74,5 +75,23 @@ public class LoginController {
             return Result.ok("发送成功,请耐心等待");
         }
         return Result.error("验证码错误");
+    }
+
+    @PostMapping("/check")
+    public Result<String> check(String email, Integer code) {
+        if (!loginService.checkCode(email, code)) {
+            return Result.error("验证码错误");
+        }
+
+        loginService.checkCode(email, code);
+        return Result.ok("验证成功");
+    }
+
+    @PostMapping("/findPassword")
+    public Result<String> findPassword(@RequestBody @Validated FindPWVO findPWVO) {
+        if (!loginService.findPassword(findPWVO)) {
+            return Result.error("修改失败，验证码错误");
+        }
+        return Result.ok("修改成功");
     }
 }
