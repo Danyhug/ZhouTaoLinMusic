@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 
 /**
@@ -45,6 +46,12 @@ public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> impl
         captcha.setCode(code);
         // 设置过期时间为 5 分钟
         captcha.setExpireTime(DateUtil.addDateMinute(new Date(), 5));
+
+        // 查询数据库中是否已存在该验证码
+        if (count(new LambdaQueryWrapper<Captcha>().eq(Captcha::getUuid, uuid)) != 0) {
+            // 说明此时有存在的验证码
+            this.remove(new LambdaQueryWrapper<Captcha>().eq(Captcha::getUuid, uuid));
+        }
 
         // 存入数据库
         this.save(captcha);
