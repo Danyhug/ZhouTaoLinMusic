@@ -1,16 +1,19 @@
 package cn.zhoutaolinmusic.controller;
 
 import cn.zhoutaolinmusic.entity.Captcha;
+import cn.zhoutaolinmusic.entity.response.UserLoginRes;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.service.LoginService;
 import cn.zhoutaolinmusic.utils.Result;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Log4j2
 @RestController
 @RequestMapping("/jjjmusic/login")
 public class LoginController {
@@ -18,7 +21,10 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    public Result login(@RequestBody User user) {
+    @PostMapping("")
+    public Result<UserLoginRes> login(@RequestBody User user) {
+        user = this.loginService.login(user);
+        log.info("用户登录成功 {}", user);
         return null;
     }
 

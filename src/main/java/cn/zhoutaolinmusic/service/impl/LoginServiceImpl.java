@@ -4,9 +4,11 @@ import cn.zhoutaolinmusic.entity.Captcha;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
+import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.service.CaptchaService;
 import cn.zhoutaolinmusic.service.LoginService;
 import cn.zhoutaolinmusic.service.user.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +30,20 @@ public class LoginServiceImpl implements LoginService {
     private CaptchaService captchaService;
 
     @Override
-    public User login(User user) {
-        return null;
+    public User login(User user) throws BaseException {
+        // 基于邮箱查询账号数据
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+
+        User result = userService.getOne(wrapper.eq(User::getEmail, user.getEmail()));
+        if (ObjectUtils.isEmpty(result)) {
+            throw new BaseException("用户不存在");
+        }
+
+        if (!result.getPassword().equals(user.getPassword())) {
+            throw new BaseException("密码错误");
+        }
+
+        return result;
     }
 
     @Override
