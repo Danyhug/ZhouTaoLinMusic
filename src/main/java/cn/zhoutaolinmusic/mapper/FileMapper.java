@@ -1,6 +1,6 @@
-package cn.zhoutaolinmusic.mapper.user;
+package cn.zhoutaolinmusic.mapper;
 
-import cn.zhoutaolinmusic.entity.user.User;
+import cn.zhoutaolinmusic.entity.File;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,8 +10,8 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author xhy
- * @since 2023-10-24
+ * @since 2023-11-20
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface FileMapper extends BaseMapper<File> {
 
 }

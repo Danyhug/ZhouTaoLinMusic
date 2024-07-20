@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author xhy
  * @since 2023-10-25
  */
-@Mapper
 public interface CaptchaMapper extends BaseMapper<Captcha> {
 
 }

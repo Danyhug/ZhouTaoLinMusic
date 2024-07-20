@@ -35,5 +35,8 @@ qiniu:
     access-key: ${QINIU_KODO_ACCESS}
     secret-key: ${QINIU_KODO_SECRET}
     bucket-name: ${QINIU_KODO_BUCKET}
+    cname: ${CNAME}
+    video-url: ${VIDEO_URL}
+    image-url: ${IMAGE_URL}
 server:
   port: ${SERVER_PORT:8882}
