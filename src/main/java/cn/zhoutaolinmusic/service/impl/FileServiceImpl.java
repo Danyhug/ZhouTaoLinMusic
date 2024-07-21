@@ -6,7 +6,9 @@ import cn.zhoutaolinmusic.entity.File;
 import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.FileMapper;
 import cn.zhoutaolinmusic.service.FileService;
+import cn.zhoutaolinmusic.service.QiNiuFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qiniu.storage.model.FileInfo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,42 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
     @Autowired
     private QiNiuConfig qiNiuConfig;
+    @Autowired
+    private QiNiuFileService qiNiuFileService;
 
     @Override
     public Long save(String fileKey, Long userId) {
-        return 0L;
+        FileInfo videoFileInfo = qiNiuFileService.getFileInfo(fileKey);
+
+        if (videoFileInfo == null) {
+            throw new IllegalArgumentException("参数不正确");
+        }
+
+        File videoFile = new File();
+        String type = videoFileInfo.mimeType;
+        videoFile.setFileKey(fileKey);
+        videoFile.setFormat(type);
+        videoFile.setType(type.contains("video") ? "视频" : "图片");
+        videoFile.setUserId(userId);
+        videoFile.setSize(videoFileInfo.fsize);
+        this.save(videoFile);
+
+        return videoFile.getId();
     }
 
     @Override
     public Long generatePhoto(Long fileId, Long userId) {
-        return 0L;
+        File file = this.getById(fileId);
+        String fileKey = file.getFileKey() + "?vframe/jpg/offset/1";
+
+        File fileInfo = new File();
+        fileInfo.setFileKey(fileKey);
+        fileInfo.setFormat("image/*");
+        fileInfo.setType("图片");
+        fileInfo.setUserId(userId);
+        this.save(fileInfo);
+
+        return fileInfo.getId();
     }
 
     @Override

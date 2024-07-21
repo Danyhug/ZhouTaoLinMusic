@@ -5,7 +5,7 @@ import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.File;
 import cn.zhoutaolinmusic.service.FileService;
 import cn.zhoutaolinmusic.utils.Result;
-import com.qiniu.util.Auth;
+import cn.zhoutaolinmusic.utils.UserHolder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +30,11 @@ public class FileController {
      * -》 后端返回access_key数据 -》 前端请求七牛云携带ak
      * -> 前端访问文件上传接口
      */
+    @PostMapping("")
+    public Result<Long> save(String fileKey) {
+        Long id = fileService.save(fileKey, UserHolder.get());
+        return Result.ok(id);
+    }
 
     /**
      * 携带文件类型获取上传七牛云需要的token

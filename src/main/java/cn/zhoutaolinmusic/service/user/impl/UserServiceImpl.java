@@ -2,6 +2,7 @@ package cn.zhoutaolinmusic.service.user.impl;
 
 import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.user.Favorites;
+import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
@@ -9,7 +10,6 @@ import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.user.UserMapper;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
 import cn.zhoutaolinmusic.service.user.UserService;
-import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;

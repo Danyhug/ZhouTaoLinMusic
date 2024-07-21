@@ -41,4 +41,11 @@ public class QiNiuConfig {
         return auth.uploadToken(this.bucketName, null, 3600,
                 new StringMap().put("mimeLimit", "video/*;image/*"));
     }
+
+    // 视频上传凭证
+    public String videoUploadToken() {
+        Auth auth = buildAuth();
+        return auth.uploadToken(this.bucketName, null, 3600,
+                new StringMap().put("mimeLimit", "video/*").putNotEmpty("fops", fops));
+    }
 }

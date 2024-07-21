@@ -6,16 +6,13 @@ import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.exception.BaseException;
-import cn.zhoutaolinmusic.mapper.CaptchaMapper;
 import cn.zhoutaolinmusic.service.CaptchaService;
 import cn.zhoutaolinmusic.service.LoginService;
 import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 

@@ -1,6 +1,7 @@
 package cn.zhoutaolinmusic.utils;
 
 import lombok.Data;
+
 import java.io.Serializable;
 
 @Data
