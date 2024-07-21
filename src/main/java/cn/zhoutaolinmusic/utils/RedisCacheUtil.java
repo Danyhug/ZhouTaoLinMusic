@@ -12,6 +12,12 @@ public class RedisCacheUtil {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    /**
+     * 普通缓存放入
+     * @param key
+     * @param value
+     * @return
+     */
     public boolean set(String key, Object value) {
         try {
             redisTemplate.opsForValue().set(key, value);
@@ -45,7 +51,24 @@ public class RedisCacheUtil {
         }
     }
 
+    /**
+     * 获取缓存
+     * @param key
+     * @return
+     */
     public Object get(String key) {
         return key == null ? null : redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 递增
+     * @param key
+     * @param num
+     */
+    public void increment(String key, long num) {
+        if (num <= 0) {
+            throw new RuntimeException("递增因子必须大于0");
+        }
+        redisTemplate.opsForValue().increment(key, num);
     }
 }
