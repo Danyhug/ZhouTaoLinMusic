@@ -1,5 +1,6 @@
 package cn.zhoutaolinmusic.controller;
 
+import cn.zhoutaolinmusic.config.LocalCache;
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.File;
 import cn.zhoutaolinmusic.service.FileService;
@@ -7,10 +8,7 @@ import cn.zhoutaolinmusic.utils.Result;
 import com.qiniu.util.Auth;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +42,9 @@ public class FileController {
 
     /**
      * 获取文件url, 获取成功后重定向到目标地址
+     * 逻辑：
+     *      前端携带视频id访问接口 -》 后端验证成功后重定向到 真实url+uuid，并将 uuid 存储到本地 -》前端请求七牛云
+     *              -》 七牛云鉴权请求本地auth接口 -》 鉴权成功后重定向到目标地址并删除uuid | 鉴权失败返回 401
      * @param request
      * @param response
      * @param fileId
@@ -66,4 +67,16 @@ public class FileController {
             // 重定向到目标地址
             response.sendRedirect(file.getFileKey());
         }
+
+    @PostMapping("/auth")
+    public void auth(@RequestParam(required = false) String uuid, HttpServletResponse response) throws IOException {
+        if (LocalCache.containsKey(uuid)) {
+            // 访问一次后 uuid 失效
+            LocalCache.rm(uuid);
+            response.sendError(200);
+
+        } else {
+            response.sendError(401);
+        }
+    }
 }

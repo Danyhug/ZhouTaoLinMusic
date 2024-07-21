@@ -1,5 +1,6 @@
 package cn.zhoutaolinmusic.service.impl;
 
+import cn.zhoutaolinmusic.config.LocalCache;
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.File;
 import cn.zhoutaolinmusic.exception.BaseException;
@@ -37,8 +38,13 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             throw new BaseException("文件不存在");
         }
 
-        String url = qiNiuConfig.getCname() + "/" + file.getFileKey() + "?uuid=" + UUID.randomUUID();
-        log.info("转换后的文件 url: " + url);
+        String uuid = UUID.randomUUID().toString();
+        String url = qiNiuConfig.getCname() + "/" + file.getFileKey() + "?uuid=" + uuid;
+        log.info("转换后的文件 url: {}", url);
+
+        // 文件 uuid 存储到缓存中
+        LocalCache.put(uuid, null);
+
         // 把真实的 url 存到 file 中
         file.setFileKey(url);
         return file;
