@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -114,9 +115,12 @@ public class Video extends BaseEntity {
     @TableField(exist = false)
     private String openName;
 
+    // 标签为 1,2,3格式 转为 列表格式
     public List<String> buildLabel(){
-        if (ObjectUtils.isEmpty(this.labelNames)) return Collections.EMPTY_LIST;
-        return Arrays.asList(this.labelNames.split(","));
+        if (ObjectUtils.isEmpty(this.labelNames)) return Collections.emptyList();
+
+        return Arrays.stream(this.labelNames.split(","))
+                .collect(Collectors.toList());
     }
 
     // 和get方法分开，避免发生歧义

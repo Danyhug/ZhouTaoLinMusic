@@ -4,10 +4,14 @@ import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.limit.Limit;
 import cn.zhoutaolinmusic.service.QiNiuFileService;
 import cn.zhoutaolinmusic.service.video.VideoService;
+import cn.zhoutaolinmusic.utils.JwtUtils;
 import cn.zhoutaolinmusic.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/jjjmusic/video")
@@ -50,5 +54,16 @@ public class VideoController {
     public Result<String> deleteVideo(@PathVariable Long id) {
         videoService.deleteVideo(id);
         return Result.ok("删除成功");
+    }
+
+    /**
+     * 兴趣推送视频
+     * @param request
+     * @return
+     */
+    @GetMapping("/pushVideos")
+    public Result<Collection<Video>> pushVideos(HttpServletRequest request) {
+        Long userId = JwtUtils.getUserId(request);
+        return Result.ok(videoService.pushVideos(userId));
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -70,5 +71,32 @@ public class RedisCacheUtil {
             throw new RuntimeException("递增因子必须大于0");
         }
         redisTemplate.opsForValue().increment(key, num);
+    }
+
+    /**
+     * 设置set缓存
+     * @param key
+     * @param value
+     */
+    public void sSet(String key, Object... value) {
+        redisTemplate.opsForSet().add(key, value);
+    }
+
+    /**
+     * 获取hash缓存
+     * @param key
+     * @return 对应的多个键值
+     */
+    public Map<Object, Object> getHashMap(String key) {
+        return redisTemplate.opsForHash().entries(key);
+    }
+
+    /**
+     * 设置hash缓存
+     * @param key
+     * @param value
+     */
+    public void setHashMap(String key, Map<Object, Object> value) {
+        redisTemplate.opsForHash().putAll(key, value);
     }
 }
