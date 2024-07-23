@@ -276,7 +276,27 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public IPage<Video> searchVideo(String search, BasePage basePage, Long userId) {
-        return null;
+        if (ObjectUtils.isEmpty(search)) throw new BaseException("搜索内容不能为空");
+
+        IPage p = basePage.page();
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+        // 携带YV则精准搜索
+        if (search.contains("YV")) {
+            wrapper.eq(Video::getYv, search);
+        } else {
+            // 模糊搜索标题
+            wrapper.like(Video::getTitle, search);
+        }
+
+        IPage<Video> page = this.page(p, wrapper);
+        List<Video> videos = page.getRecords();
+
+        // 添加用户信息
+        addVideosDetailInfo(videos);
+        // 添加用户搜索记录
+        userService.addSearchHistory(userId, search);
+
+        return page;
     }
 
     @Override

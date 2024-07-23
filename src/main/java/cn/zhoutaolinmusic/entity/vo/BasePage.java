@@ -11,6 +11,9 @@ public class BasePage {
     private Long limit = 15L;
 
     public IPage page(){
-        return new Page(page == null ? 1L : this.page,limit == null ? 15L : this.limit);
+        long currentPage = (this.page != null) ? this.page : 1L;
+        long recordsPerPage = (this.limit != null) ? this.limit : 15L;
+
+        return new Page<>(currentPage, recordsPerPage);
     }
 }

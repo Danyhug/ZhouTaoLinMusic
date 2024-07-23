@@ -56,14 +56,5 @@ public class VideoController {
         return Result.ok("删除成功");
     }
 
-    /**
-     * 兴趣推送视频
-     * @param request
-     * @return
-     */
-    @GetMapping("/pushVideos")
-    public Result<Collection<Video>> pushVideos(HttpServletRequest request) {
-        Long userId = JwtUtils.getUserId(request);
-        return Result.ok(videoService.pushVideos(userId));
-    }
+
 }
