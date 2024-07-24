@@ -2,9 +2,11 @@ package cn.zhoutaolinmusic.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -98,5 +100,45 @@ public class RedisCacheUtil {
      */
     public void setHashMap(String key, Map<Object, Object> value) {
         redisTemplate.opsForHash().putAll(key, value);
+    }
+
+    /**
+     * 添加有序集合
+     * @param key
+     * @param score
+     * @param value
+     * @param time
+     */
+    public void addSortList(String key, double score, Object value, long time) {
+        redisTemplate.opsForZSet().add(key, value, score);
+        redisTemplate.expire(key, time, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 获取有序集合，分页
+     * @param key
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public Set<ZSetOperations.TypedTuple<Object>> getSortListByPage(String key, long pageNum, long pageSize) {
+        try {
+            // 缓存中没有的情况
+            if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) return null;
+
+            long start = (pageNum - 1) * pageSize;
+            long end = pageNum * pageSize - 1;
+            Long size = redisTemplate.opsForZSet().size(key);
+            if (size == null) return null;
+            // 如果当前页大于总页数
+            if (end > size) {
+                end = -1;
+            }
+
+            return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

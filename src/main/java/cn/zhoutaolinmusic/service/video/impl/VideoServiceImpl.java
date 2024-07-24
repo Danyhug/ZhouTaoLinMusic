@@ -3,6 +3,7 @@ package cn.zhoutaolinmusic.service.video.impl;
 import cn.zhoutaolinmusic.config.LocalCache;
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.constant.AuditStatus;
+import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.File;
 import cn.zhoutaolinmusic.entity.VideoTask;
 import cn.zhoutaolinmusic.entity.user.User;
@@ -12,6 +13,7 @@ import cn.zhoutaolinmusic.entity.video.VideoStar;
 import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.BasePage;
 import cn.zhoutaolinmusic.entity.vo.HotVideo;
+import cn.zhoutaolinmusic.entity.vo.UserModel;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
 import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.video.VideoMapper;
@@ -25,15 +27,20 @@ import cn.zhoutaolinmusic.service.video.VideoService;
 import cn.zhoutaolinmusic.service.video.VideoShareService;
 import cn.zhoutaolinmusic.service.video.VideoStarService;
 import cn.zhoutaolinmusic.utils.FileUtil;
+import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import cn.zhoutaolinmusic.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,6 +76,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     private FavoritesService favoritesService;
     @Autowired
     private FollowService followService;
+    @Autowired
+    private RedisCacheUtil redisCacheUtil;
 
     @Override
     public Video getVideoById(Long videoId, Long userId) {
@@ -301,37 +310,152 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void auditProcess(Video video) {
+        // 审核通过
+        this.updateById(video);
+        // 添加到兴趣推送
+        interestPushService.pushSystemStockIn(video);
+        interestPushService.pushSystemTypeStockIn(video);
 
+        // 审核状态添加到邮箱 TODO
+        // feedService.pushInBoxFeed(video.getUserId(), video.getId(), video.getGmtCreated().getTime());
     }
 
     @Override
     public boolean startVideo(Long videoId) {
-        return false;
+        // 获取视频信息
+        Video video = this.getById(videoId);
+        if (video == null) throw new BaseException("点赞的视频不存在");
+
+        VideoStar videoStar = new VideoStar();
+        // 添加点赞信息
+        videoStar.setVideoId(videoId);
+        videoStar.setUserId(video.getUserId());
+
+        // 点赞是否成功
+        boolean result = videoStarService.starVideo(videoStar);
+        updateStar(video, result ? 1L : -1L);
+
+        // 获取标签
+        List<String> labels = video.buildLabel();
+        // 更新用户模型
+        UserModel userModel = UserModel.buildUserModel(labels, videoId, 1.0);
+        interestPushService.updateUserModel(userModel);
+
+        return result;
+    }
+
+    /**
+     * 更新点赞
+     * @param video
+     * @param value
+     */
+    public void updateStar(Video video, Long value) {
+        UpdateWrapper<Video> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.setSql("start_count = start_count + #{value}");
+        updateWrapper.lambda().eq(Video::getId, video.getId()).eq(Video::getStartCount, video.getStartCount());
+        this.update(video, updateWrapper);
     }
 
     @Override
     public boolean shareVideo(VideoShare videoShare) {
+        // TODO
         return false;
+    }
+
+    /**
+     * 浏览量
+     *
+     * @param video
+     */
+    public void updateHistory(Video video, Long value) {
+        final UpdateWrapper<Video> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.setSql("history_count = history_count + " + value);
+        updateWrapper.lambda().eq(Video::getId, video.getId()).eq(Video::getHistoryCount, video.getHistoryCount());
+        this.update(video, updateWrapper);
     }
 
     @Override
     public void historyVideo(Long videoId, Long userId) throws Exception {
+        String key = RedisConstant.HISTORY_VIDEO + userId;
+        Object o = redisCacheUtil.get(key);
 
+        // 因为是有序集合，key值不可重复，所以说只需要添加一次就可以了
+        if (o == null) {
+            redisCacheUtil.set(key, videoId, RedisConstant.HISTORY_TIME);
+            Video video = this.getById(videoId);
+            video.setUser(userService.getInfo(video.getUserId()));
+            // 设置分类名称
+            video.setTypeName(typeService.getById(video.getTypeId()).getName());
+            redisCacheUtil.addSortList(RedisConstant.USER_HISTORY_VIDEO + userId, new Date().getTime(), video, RedisConstant.HISTORY_TIME);
+            updateHistory(video, 1L);
+        }
+    }
+
+    public void updateFavorites(Video video, Long value) {
+        final UpdateWrapper<Video> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.setSql("favorites_count = favorites_count + " + value);
+        updateWrapper.lambda().eq(Video::getId, video.getId()).eq(Video::getFavoritesCount, video.getFavoritesCount());
+        this.update(video, updateWrapper);
     }
 
     @Override
     public boolean favoritesVideo(Long fId, Long vId) {
-        return false;
+        Video video = this.getById(vId);
+        if (video == null) throw new BaseException("收藏的视频不存在");
+
+        boolean favorites = favoritesService.favorites(fId, vId);
+        updateFavorites(video, favorites ? 1L : -1L);
+
+        List<String> labels = video.buildLabel();
+
+        // 更新用户模型
+        UserModel userModel = UserModel.buildUserModel(labels, vId, 2.0);
+        interestPushService.updateUserModel(userModel);
+
+        return favorites;
     }
 
     @Override
     public LinkedHashMap<String, List<Video>> getHistory(BasePage basePage) {
-        return null;
+        // 获取浏览历史
+        Long userId = UserHolder.get();
+        String key = RedisConstant.USER_HISTORY_VIDEO + userId;
+        Set<ZSetOperations.TypedTuple<Object>> typedTuples = redisCacheUtil.getSortListByPage(key, basePage.getPage(), basePage.getLimit());
+        // 缓存没有，返回空
+        if (ObjectUtils.isEmpty(typedTuples)) return new LinkedHashMap<>();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<Video> temp = new ArrayList<>();
+
+        LinkedHashMap<String, List<Video>> result = new LinkedHashMap<>();
+        for (ZSetOperations.TypedTuple<Object> typedTuple : typedTuples) {
+            Date date = new Date(typedTuple.getScore().longValue());
+            String format = simpleDateFormat.format(date);
+            if (!result.containsKey(format)) {
+                result.put(format, new ArrayList<>());
+            }
+            Video video = (Video) typedTuple.getValue();
+            // 按时间分类，添加视频数据
+            result.get(format).add(video);
+            temp.add(video);
+        }
+        addVideosDetailInfo(temp);
+
+        return result;
     }
 
     @Override
     public Collection<Video> listVideoByFavorites(Long favoritesId) {
-        return null;
+        // 获取收藏夹数据
+        List<Long> videoIds = favoritesService.listVideoIds(favoritesId, UserHolder.get());
+        if (ObjectUtils.isEmpty(videoIds)) return Collections.emptyList();
+
+        // 根据收藏夹的视频id获取所有的视频数据
+        Collection<Video> videos = this.listByIds(videoIds);
+        // 添加视频详情信息
+        addVideosDetailInfo(videos);
+
+        return videos;
     }
 
     @Override
