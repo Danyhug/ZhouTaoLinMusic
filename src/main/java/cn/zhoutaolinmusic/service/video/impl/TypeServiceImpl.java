@@ -3,7 +3,6 @@ package cn.zhoutaolinmusic.service.video.impl;
 import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.mapper.video.TypeMapper;
 import cn.zhoutaolinmusic.service.video.TypeService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

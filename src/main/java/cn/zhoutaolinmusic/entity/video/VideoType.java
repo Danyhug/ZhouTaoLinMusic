@@ -1,20 +1,13 @@
 package cn.zhoutaolinmusic.entity.video;
 
 import cn.zhoutaolinmusic.entity.BaseEntity;
-import com.baomidou.mybatisplus.annotation.IdType;
-
-import java.util.Arrays;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
