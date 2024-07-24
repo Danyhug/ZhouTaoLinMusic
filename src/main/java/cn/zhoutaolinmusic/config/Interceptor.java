@@ -15,14 +15,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 // 拦截器
 @Component
 public class Interceptor implements HandlerInterceptor {
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final UserService userService;
 
-    UserService userService;
     public Interceptor(UserService userService) {
         this.userService = userService;
     }
@@ -55,7 +55,9 @@ public class Interceptor implements HandlerInterceptor {
         response.setHeader("Cache-Control", "no-cache");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println(objectMapper.writeValueAsString(result));
-        response.getWriter().flush();
+
+        PrintWriter writer = response.getWriter();
+        writer.println(objectMapper.writeValueAsString(result));
+        writer.flush();
     }
 }
