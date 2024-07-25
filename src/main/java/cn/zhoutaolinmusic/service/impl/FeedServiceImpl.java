@@ -73,7 +73,7 @@ public class FeedServiceImpl implements FeedService {
 
     }
 
-    public void init(Long userId,Long min,Long max,Collection<Long> followIds) {
+    public void init(Long userId, Long min, Long max, Collection<Long> followIds) {
         String t1 = RedisConstant.OUT_FOLLOW;
         String t2 = RedisConstant.IN_FOLLOW;
         // 查看关注人的发件箱

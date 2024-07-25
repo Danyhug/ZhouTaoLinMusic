@@ -8,12 +8,18 @@ import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
 import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.user.UserMapper;
+import cn.zhoutaolinmusic.service.FileService;
+import cn.zhoutaolinmusic.service.InterestPushService;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
+import cn.zhoutaolinmusic.service.user.FollowService;
 import cn.zhoutaolinmusic.service.user.UserService;
+import cn.zhoutaolinmusic.service.video.TypeService;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -22,14 +28,36 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+@Log4j2
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    @Autowired
+    private TypeService typeService;
+
+    // @Autowired
+    // private UserSubscribeService userSubscribeService;
+
+    @Autowired
+    private FollowService followService;
 
     @Autowired
     private RedisCacheUtil redisCacheUtil;
 
     @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private InterestPushService interestPushService;
+
+    @Autowired
     private FavoritesService favoritesService;
+    //
+    // @Autowired
+    // private TextAuditService textAuditService;
+
+    // @Autowired
+    // private ImageAuditService imageAuditService;
 
     @Override
     public boolean register(RegisterVO registerVO) throws Exception {
@@ -74,7 +102,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserVO getInfo(Long userId) {
-        return null;
+        User user = this.getById(userId);
+        if (ObjectUtils.isEmpty(user)) {
+            return new UserVO();
+        }
+
+        UserVO uservo = new UserVO();
+        log.info("获取id为 {} 的个人信息 {}", userId, user);
+
+        BeanUtils.copyProperties(user, uservo);
+
+        // 查询关注量
+        long followCount = followService.getFollowCount(userId);
+
+        // 查粉丝量
+        long fansCount = followService.getFansCount(userId);
+        uservo.setFollow(followCount);
+        uservo.setFans(fansCount);
+
+        return uservo;
     }
 
     @Override

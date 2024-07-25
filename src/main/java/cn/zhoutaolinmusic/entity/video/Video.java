@@ -16,14 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- *
- * </p>
- *
- * @author xhy
- * @since 2023-10-24
- */
 @Data
 @Component
 @EqualsAndHashCode(callSuper = false)
@@ -31,6 +23,7 @@ public class Video extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @Autowired
+    @TableField(exist = false)
     private QiNiuConfig qiNiuConfig;
 
     // YV ID 以YV+UUID

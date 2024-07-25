@@ -34,6 +34,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -46,6 +47,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements VideoService {
 
@@ -226,6 +228,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             videoIds = list(new LambdaQueryWrapper<Video>().orderByDesc(Video::getGmtCreated))
                     .stream().map(Video::getId).collect(Collectors.toList());
         }
+
+        if (ObjectUtils.isEmpty(videoIds)) return new ArrayList<>();
 
         Collection<Video> videos = this.listByIds(videoIds);
         addVideosDetailInfo(videos);
@@ -516,6 +520,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     public void initFollowFeed(Long userId) {
         // 获取所有关注的人
         Collection<Long> followIds = followService.getFollow(userId, null);
+        log.info("获取所有关注的人 {}", followIds);
         feedService.initFollowFeed(userId, followIds);
     }
 

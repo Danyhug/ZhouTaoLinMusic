@@ -20,6 +20,7 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> ok() {
         Result<T> result = new Result<>();
         result.setCode(0);
+        result.setState(true);
         result.setMessage("成功");
         return result;
     }
@@ -27,6 +28,7 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> ok(T data) {
         Result<T> result = new Result<>();
         result.setCode(0);
+        result.setState(true);
         result.setData(data);
         return result;
     }

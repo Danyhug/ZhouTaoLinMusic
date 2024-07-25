@@ -114,6 +114,10 @@ public class RedisCacheUtil {
         redisTemplate.expire(key, time, TimeUnit.SECONDS);
     }
 
+    public Set<Object> getSortList(String key) {
+        return redisTemplate.opsForZSet().range(key, 0, -1);
+    }
+
     /**
      * 获取有序集合，分页
      * @param key
