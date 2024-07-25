@@ -13,7 +13,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @ToString
-public class HotVideo implements  Serializable {
+public class HotVideo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public class HotVideo implements  Serializable {
         DecimalFormat formater = new DecimalFormat("0.0");
         formater.setRoundingMode(RoundingMode.HALF_UP);    // 5000008.89
         String formatNum = formater.format(decimal);
-        this.setHotFormat( formatNum+"万");
+        this.setHotFormat(formatNum + "万");
     }
 
 

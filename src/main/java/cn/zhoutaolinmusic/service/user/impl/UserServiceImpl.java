@@ -3,6 +3,8 @@ package cn.zhoutaolinmusic.service.user.impl;
 import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.user.Favorites;
 import cn.zhoutaolinmusic.entity.user.User;
+import cn.zhoutaolinmusic.entity.user.UserSubscribe;
+import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
@@ -13,6 +15,7 @@ import cn.zhoutaolinmusic.service.InterestPushService;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
 import cn.zhoutaolinmusic.service.user.FollowService;
 import cn.zhoutaolinmusic.service.user.UserService;
+import cn.zhoutaolinmusic.service.user.UserSubscribeService;
 import cn.zhoutaolinmusic.service.video.TypeService;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -24,9 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -49,6 +51,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private InterestPushService interestPushService;
+
+    @Autowired
+    private UserSubscribeService userSubscribeService;
 
     @Autowired
     private FavoritesService favoritesService;
@@ -166,7 +171,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Collection<String> searchHistory(Long userId) {
-        return null;
+        String key = RedisConstant.USER_SEARCH_HISTORY + userId;
+        List<String> search = new ArrayList<>();
+        if (userId == null) return search;
+
+        // 缓存中有数据
+        search.addAll(redisCacheUtil.getSortList(key).stream().map(Object::toString).collect(Collectors.toList()));
+
+        return search;
     }
 
     @Override
@@ -177,5 +189,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void deleteSearchHistory(Long userId) {
 
+    }
+
+    @Override
+    public Collection<VideoType> listSubscribeType(Long userId) {
+        if (userId == null) return Collections.emptyList();
+
+        // 查询用户订阅的所有分类id
+        List<Long> typeIds = userSubscribeService.list(new LambdaQueryWrapper<UserSubscribe>().eq(UserSubscribe::getUserId, userId))
+                .stream().map(UserSubscribe::getTypeId).collect(Collectors.toList());
+        if (ObjectUtils.isEmpty(typeIds)) return Collections.emptyList();
+
+        // 根据分类id查询所有分类信息
+        final List<VideoType> types = typeService.list(new LambdaQueryWrapper<VideoType>()
+                .in(VideoType::getId, typeIds).select(VideoType::getId, VideoType::getName, VideoType::getIcon));
+        return types;
     }
 }

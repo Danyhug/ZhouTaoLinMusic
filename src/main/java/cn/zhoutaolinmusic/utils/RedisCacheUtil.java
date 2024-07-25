@@ -115,7 +115,7 @@ public class RedisCacheUtil {
     }
 
     public Set<Object> getSortList(String key) {
-        return redisTemplate.opsForZSet().range(key, 0, -1);
+        return redisTemplate.opsForZSet().reverseRange(key, 0, -1);
     }
 
     /**

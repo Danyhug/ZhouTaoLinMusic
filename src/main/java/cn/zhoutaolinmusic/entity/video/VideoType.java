@@ -2,6 +2,7 @@ package cn.zhoutaolinmusic.entity.video;
 
 import cn.zhoutaolinmusic.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@TableName("type")
 public class VideoType extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

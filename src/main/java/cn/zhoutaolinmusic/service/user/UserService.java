@@ -1,6 +1,7 @@
 package cn.zhoutaolinmusic.service.user;
 
 import cn.zhoutaolinmusic.entity.user.User;
+import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
@@ -120,6 +121,12 @@ public interface UserService extends IService<User> {
      * @param userId
      */
     void deleteSearchHistory(Long userId);
+
+    /**
+     * 获取订阅分类
+     * @return
+     */
+    Collection<VideoType> listSubscribeType(Long uid);
 
 
     // Collection<Type> listNoSubscribeType(Long aLong);

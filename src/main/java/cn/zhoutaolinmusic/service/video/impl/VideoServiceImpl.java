@@ -34,8 +34,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -71,6 +74,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // @Autowired
     // private VideoAuditService videoAuditService;
@@ -471,7 +477,26 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public Collection<HotVideo> hotRank() {
-        return null;
+        // 获取热门视频
+        Set<ZSetOperations.TypedTuple<Object>> zSet = redisTemplate.opsForZSet().reverseRangeWithScores(RedisConstant.HOT_RANK, 0, -1);
+        ArrayList<HotVideo> hotVideos = new ArrayList<>();
+
+        // 遍历所有热门视频
+        for (ZSetOperations.TypedTuple<Object> objectTypedTuple : zSet) {
+            HotVideo hotVideo;
+            try {
+                // 获取视频信息 id 、title
+                hotVideo = objectMapper.readValue(objectTypedTuple.getValue().toString(), HotVideo.class);
+                // 获取热点值
+                hotVideo.setHot((double) objectTypedTuple.getScore().intValue());
+                // 将热点值格式化为字符串
+                hotVideo.hotFormat();
+                hotVideos.add(hotVideo);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return hotVideos;
     }
 
     @Override
@@ -496,7 +521,41 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public Collection<Video> listHotVideo() {
-        return null;
+        // 获取热门视频
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DATE);
+
+        HashMap<String, Integer> map = new HashMap<>();
+
+        // 优先推荐今天的视频，后面是权重
+        map.put(RedisConstant.HOT_VIDEO + today, 10);
+        map.put(RedisConstant.HOT_VIDEO + (today - 1), 3);
+        map.put(RedisConstant.HOT_VIDEO + (today - 2), 2);
+
+        List<Long> hotVideoIds = redisTemplate.executePipelined((RedisCallback<?>) connection -> {
+            // 传入key为当天日期，value为获取当天的几个视频，最后获取的是当天的视频列表
+            map.forEach((key, value) -> {
+                connection.sRandMember(key.getBytes(), value);
+            });
+            return null;
+        });
+
+        // 没有热门视频
+        if (ObjectUtils.isEmpty(hotVideoIds)) return Collections.emptyList();
+
+        ArrayList<Long> videoIds = new ArrayList<>();
+        for (Object hotVideoId : hotVideoIds) {
+            if (!ObjectUtils.isEmpty(hotVideoId)) {
+                videoIds.addAll(Arrays.asList((Long[]) hotVideoId));
+            }
+        }
+
+        if (ObjectUtils.isEmpty(videoIds)) return Collections.emptyList();
+
+        Collection<Video> videos = this.listByIds(videoIds);
+        addVideosDetailInfo(videos);
+
+        return videos;
     }
 
     @Override
