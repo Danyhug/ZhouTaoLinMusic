@@ -15,4 +15,10 @@ public class DateUtil {
     public static Date addDateMinute(Date date, int minute) {
         return new DateTime(date).plusMinutes(minute).toDate();
     }
+
+    // 对天加减
+    public static Date addDateDays(Date date, int days) {
+        DateTime dateTime = new DateTime(date);
+        return dateTime.plusDays(days).toDate();
+    }
 }

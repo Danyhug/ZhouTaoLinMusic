@@ -17,6 +17,7 @@ import cn.zhoutaolinmusic.entity.vo.UserModel;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
 import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.video.VideoMapper;
+import cn.zhoutaolinmusic.service.FeedService;
 import cn.zhoutaolinmusic.service.FileService;
 import cn.zhoutaolinmusic.service.InterestPushService;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
@@ -59,6 +60,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Autowired
     private InterestPushService interestPushService;
+
+    @Autowired
+    private FeedService feedService;
 
     @Autowired
     private UserService userService;
@@ -512,8 +516,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     public void initFollowFeed(Long userId) {
         // 获取所有关注的人
         Collection<Long> followIds = followService.getFollow(userId, null);
-        // TODO
-        // feedService.initFollowFeed(userId, followIds);
+        feedService.initFollowFeed(userId, followIds);
     }
 
     @Override
