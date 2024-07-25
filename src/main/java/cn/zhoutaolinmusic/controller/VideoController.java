@@ -76,4 +76,16 @@ public class VideoController {
         );
     }
 
+    /**
+     * 添加历史记录
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/history/{id}")
+    public Result addHistory(@PathVariable Long id) throws Exception {
+        videoService.historyVideo(id, UserHolder.get());
+        return Result.ok();
+    }
+
 }
