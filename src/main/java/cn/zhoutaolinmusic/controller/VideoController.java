@@ -1,10 +1,12 @@
 package cn.zhoutaolinmusic.controller;
 
 import cn.zhoutaolinmusic.entity.video.Video;
+import cn.zhoutaolinmusic.entity.vo.BasePage;
 import cn.zhoutaolinmusic.limit.Limit;
 import cn.zhoutaolinmusic.service.QiNiuFileService;
 import cn.zhoutaolinmusic.service.video.VideoService;
 import cn.zhoutaolinmusic.utils.Result;
+import cn.zhoutaolinmusic.utils.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +54,14 @@ public class VideoController {
         return Result.ok("删除成功");
     }
 
+    /**
+     * 查看用户管理的视频 — 稿件管理
+     * @param basePage
+     * @return
+     */
+    @GetMapping("")
+    public Result getListVideo(BasePage basePage) {
+        return Result.ok(videoService.listByUserIdVideo(basePage, UserHolder.get()));
+    }
 
 }

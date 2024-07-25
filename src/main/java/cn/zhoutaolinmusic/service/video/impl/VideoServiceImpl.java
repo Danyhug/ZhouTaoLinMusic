@@ -499,7 +499,13 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public IPage<Video> listByUserIdVideo(BasePage basePage, Long userId) {
-        return null;
+        // 获取用户的所有视频数据
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<Video>()
+                .eq(Video::getUserId, userId).orderByDesc(Video::getGmtCreated);
+        IPage page = this.page(basePage.page(), wrapper);
+        addVideosDetailInfo(page.getRecords());
+
+        return page;
     }
 
     @Override
