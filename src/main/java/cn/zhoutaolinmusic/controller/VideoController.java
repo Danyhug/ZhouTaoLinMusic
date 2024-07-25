@@ -64,4 +64,16 @@ public class VideoController {
         return Result.ok(videoService.listByUserIdVideo(basePage, UserHolder.get()));
     }
 
+    /**
+     * 点赞视频
+     * @param vid
+     * @return
+     */
+    @PostMapping("/star/{vid}")
+    public Result<String> starVideo(@PathVariable Long vid) {
+        return Result.ok(
+                videoService.startVideo(vid) ? "已点赞" : "取消点赞"
+        );
+    }
+
 }
