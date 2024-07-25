@@ -88,4 +88,68 @@ public class VideoController {
         return Result.ok();
     }
 
+    /**
+     * 获取历史记录
+     * @param basePage
+     * @return
+     */
+    @GetMapping("/history")
+    public Result<Object> getHistory(BasePage basePage) {
+        return Result.ok(videoService.getHistory(basePage));
+    }
+
+    /**
+     * 获取收藏夹视频
+     * @param id
+     * @return
+     */
+    @GetMapping("/favorites/{id}")
+    public Result<Object> listVideoByFavorites(@PathVariable Long id) {
+        return Result.ok(videoService.listVideoByFavorites(id));
+    }
+
+    /**
+     * 收藏视频
+     * @param fId
+     * @param vId
+     * @return
+     */
+    @PostMapping("/favorites/{fId}/{vId}")
+    public Result<String> favoritesVideo(@PathVariable Long fId, @PathVariable Long vId) {
+        return Result.ok(
+                videoService.favoritesVideo(fId, vId) ? "已收藏" : "取消收藏"
+        );
+    }
+
+    /**
+     * 获取审核队列状态
+     * @return
+     */
+    @GetMapping("/audit/queue/state")
+    public Result<String> getAuditQueueState() {
+        // TODO
+        return Result.ok(videoService.getAuditQueueState());
+    }
+
+    /**
+     * 获取关注的人视频
+     * @param lastTime 滚动分页
+     * @return
+     */
+    @GetMapping("/follow/feed")
+    public Result<Object> followFeed(@RequestParam(required = false) Long lastTime) {
+        return Result.ok(
+                videoService.followFeed(UserHolder.get(), lastTime)
+        );
+    }
+
+    /**
+     * 初始化收件箱
+     * @return
+     */
+    @PostMapping("/init/follow/feed")
+    public Result<Object> initFollowFeed() {
+        videoService.initFollowFeed(UserHolder.get());
+        return Result.ok();
+    }
 }

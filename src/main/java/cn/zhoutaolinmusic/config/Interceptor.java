@@ -6,8 +6,6 @@ import cn.zhoutaolinmusic.utils.JwtUtils;
 import cn.zhoutaolinmusic.utils.Result;
 import cn.zhoutaolinmusic.utils.UserHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;

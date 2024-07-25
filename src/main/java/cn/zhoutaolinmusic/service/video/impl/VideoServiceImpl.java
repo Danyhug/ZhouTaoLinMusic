@@ -34,6 +34,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -61,6 +62,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     // @Autowired
     // private VideoAuditService videoAuditService;
@@ -489,12 +493,27 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public Collection<Video> followFeed(Long userId, Long lastTime) {
-        return null;
+        // 查看redis中是否存在
+        Set<Long> set = redisTemplate.opsForZSet().reverseRangeByScore(
+                RedisConstant.IN_FOLLOW + userId,
+                    0, lastTime == null ? new Date().getTime() : lastTime, lastTime == null ? 0 : 1, 5);
+        // 缓存中不存在
+        if (ObjectUtils.isEmpty(set)) return Collections.emptyList();
+
+        // 查到的数据按时间排序
+        Collection<Video> videos = this.list(new LambdaQueryWrapper<Video>()
+                .in(Video::getId, set).orderByDesc(Video::getGmtCreated));
+        addVideosDetailInfo(videos);
+
+        return videos;
     }
 
     @Override
     public void initFollowFeed(Long userId) {
-
+        // 获取所有关注的人
+        Collection<Long> followIds = followService.getFollow(userId, null);
+        // TODO
+        // feedService.initFollowFeed(userId, followIds);
     }
 
     @Override
