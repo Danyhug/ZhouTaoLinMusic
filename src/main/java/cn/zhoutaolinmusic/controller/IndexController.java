@@ -13,10 +13,7 @@ import cn.zhoutaolinmusic.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
@@ -72,7 +69,7 @@ public class IndexController {
                 new LambdaQueryWrapper<VideoType>().select(VideoType::getIcon, VideoType::getId, VideoType::getName).orderByDesc(VideoType::getSort)
         );
 
-        // 查询用户已订阅的分类
+        // 查询用户自己创建的分类
         Set<Long> set = userService.listSubscribeType(JwtUtils.getUserId(request)).stream()
                 .map(VideoType::getId).collect(Collectors.toSet());
 
@@ -114,5 +111,40 @@ public class IndexController {
     @GetMapping("/video/hot/rank")
     public Result<Collection<HotVideo>> hotRank() {
         return Result.ok(videoService.hotRank());
+    }
+
+    /**
+     * 根据用户id获取视频
+     * @param userId
+     * @param basePage
+     * @param request
+     * @return
+     */
+    @GetMapping("/video/user")
+    public Result listVideoByUserId(@RequestParam(required = false) Long userId,
+                               BasePage basePage,HttpServletRequest request){
+        userId = userId == null ? JwtUtils.getUserId(request) : userId;
+        return Result.ok(videoService.listByUserIdOpenVideo(userId, basePage));
+    }
+
+    /**
+     * 根据视频标签推送相似视频
+     * @param video
+     * @return
+     */
+    @GetMapping("/video/similar")
+    public Result pushVideoSimilar(Video video) {
+        return Result.ok(videoService.listSimilarVideo(video));
+    }
+
+    /**
+     * 根据视频id获取视频
+     * @param id
+     * @param request
+     * @return
+     */
+    @GetMapping("/video/{id}")
+    public Result<Video> getVideoById(@PathVariable Long id, HttpServletRequest request) {
+        return Result.ok(videoService.getVideoById(id, JwtUtils.getUserId(request)));
     }
 }

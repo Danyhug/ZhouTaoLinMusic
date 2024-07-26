@@ -130,7 +130,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public List<User> list(Collection<Long> userIds) {
-        return null;
+        return this.list(new LambdaQueryWrapper<User>().in(User::getId, userIds)
+                .select(User::getId, User::getNickName, User::getSex, User::getAvatar, User::getDescription));
     }
 
     @Override

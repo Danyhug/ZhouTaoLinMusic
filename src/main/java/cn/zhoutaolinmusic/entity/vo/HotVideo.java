@@ -31,7 +31,6 @@ public class HotVideo implements Serializable {
         this.title = title;
     }
 
-
     public void hotFormat(){
         BigDecimal bigDecimal = new BigDecimal(this.hot);
         BigDecimal decimal = bigDecimal.divide(new BigDecimal("10000"));
@@ -40,7 +39,6 @@ public class HotVideo implements Serializable {
         String formatNum = formater.format(decimal);
         this.setHotFormat(formatNum + "万");
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -501,12 +501,35 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public Collection<Video> listSimilarVideo(Video video) {
-        return null;
+        if (ObjectUtils.isEmpty(video.getId()) || ObjectUtils.isEmpty(video)) return Collections.emptyList();
+
+        // 获取视频标签
+        List<String> labels = video.buildLabel();
+        ArrayList<String> labelNames = new ArrayList<>();
+        // 将所有的标签添加到集合中
+        labelNames.addAll(labels);
+
+        // 根据标签获取视频id
+        Set<Long> videoIds = (Set<Long>) interestPushService.listVideoIdByLabels(labelNames);
+
+        // 推荐的视频不要有当前的视频
+        videoIds.remove(video.getId());
+
+        Collection<Video> videos = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(videoIds)) {
+            videos = this.listByIds(videoIds);
+            addVideosDetailInfo(videos);
+        }
+        return videos;
     }
 
     @Override
     public IPage<Video> listByUserIdOpenVideo(Long userId, BasePage basePage) {
-        return null;
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<Video>().eq(Video::getUserId, userId).eq(Video::getOpen, 0);
+        IPage<Video> page = this.page(basePage.page(), wrapper);
+        List<Video> videos = page.getRecords();
+        addVideosDetailInfo(videos);
+        return page;
     }
 
     @Override

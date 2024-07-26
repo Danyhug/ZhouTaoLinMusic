@@ -9,6 +9,7 @@ public class LocalCache {
     private static Map<String, Object> cache = new ConcurrentHashMap<>();
 
     public static void put(String key, Object value) {
+        if (value == null) value = 0;
         cache.put(key, value);
     }
 
