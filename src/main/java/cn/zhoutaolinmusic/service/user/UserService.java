@@ -2,9 +2,8 @@ package cn.zhoutaolinmusic.service.user;
 
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.video.VideoType;
-import cn.zhoutaolinmusic.entity.vo.FindPWVO;
-import cn.zhoutaolinmusic.entity.vo.RegisterVO;
-import cn.zhoutaolinmusic.entity.vo.UserVO;
+import cn.zhoutaolinmusic.entity.vo.*;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
@@ -134,6 +133,26 @@ public interface UserService extends IService<User> {
      */
     Collection<VideoType> listNoSubscribeType(Long uid);
 
+    /**
+     * 获取粉丝
+     * @param userId
+     * @param basePage
+     * @return
+     */
+    Page<User> getFans(Long userId, BasePage basePage);
 
-    // Collection<Type> listNoSubscribeType(Long aLong);
+    /**
+     * 获取关注
+     *
+     * @param userId
+     * @param basePage
+     * @return
+     */
+    Page<User> getFollows(Long userId, BasePage basePage);
+
+    /**
+     * 修改用户资料
+     * @param user
+     */
+    void updateUser(UpdateUserVO user);
 }

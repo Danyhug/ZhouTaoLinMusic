@@ -9,7 +9,6 @@ import cn.zhoutaolinmusic.service.video.TypeService;
 import cn.zhoutaolinmusic.service.video.VideoService;
 import cn.zhoutaolinmusic.utils.JwtUtils;
 import cn.zhoutaolinmusic.utils.Result;
-import cn.zhoutaolinmusic.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;

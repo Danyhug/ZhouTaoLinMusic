@@ -2,6 +2,8 @@ package cn.zhoutaolinmusic.controller;
 
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.user.Favorites;
+import cn.zhoutaolinmusic.entity.vo.BasePage;
+import cn.zhoutaolinmusic.entity.vo.UpdateUserVO;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
 import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.utils.Result;
@@ -114,5 +116,39 @@ public class CustomerController {
     @GetMapping("/noSubscribe")
     public Result listNoSubscribeType() {
         return Result.ok(userService.listNoSubscribeType(UserHolder.get()));
+    }
+
+    /**
+     * 获取粉丝
+     * @param basePage
+     * @param userId
+     * @return
+     */
+    @GetMapping("/fans")
+    public Result getFans(BasePage basePage, Long userId) {
+        return Result.ok(userService.getFans(userId, basePage));
+    }
+
+
+    /**
+     * 获取关注
+     * @param basePage
+     * @param userId
+     * @return
+     */
+    @GetMapping("/follows")
+    public Result getFollows(BasePage basePage,Long userId){
+        return Result.ok(userService.getFollows(userId,basePage));
+    }
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    @PutMapping("")
+    public Result updateUser(@RequestBody @Validated UpdateUserVO user){
+        userService.updateUser(user);
+        return Result.ok("修改成功");
     }
 }

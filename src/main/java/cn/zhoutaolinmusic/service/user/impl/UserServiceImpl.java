@@ -4,12 +4,8 @@ import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.user.Favorites;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.user.UserSubscribe;
-import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.entity.video.VideoType;
-import cn.zhoutaolinmusic.entity.vo.FindPWVO;
-import cn.zhoutaolinmusic.entity.vo.ModelVO;
-import cn.zhoutaolinmusic.entity.vo.RegisterVO;
-import cn.zhoutaolinmusic.entity.vo.UserVO;
+import cn.zhoutaolinmusic.entity.vo.*;
 import cn.zhoutaolinmusic.exception.BaseException;
 import cn.zhoutaolinmusic.mapper.user.UserMapper;
 import cn.zhoutaolinmusic.service.FileService;
@@ -23,6 +19,7 @@ import cn.zhoutaolinmusic.utils.RedisCacheUtil;
 import cn.zhoutaolinmusic.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -265,5 +263,85 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
         return result;
+    }
+
+    @Override
+    public Page<User> getFans(Long userId, BasePage basePage) {
+        Page<User> page = new Page<>();
+        // 获取所有粉丝
+        Collection<Long> fans = followService.getFans(userId, basePage);
+        if (ObjectUtils.isEmpty(fans)) return page;
+        // 获取所有关注
+        HashSet<Long> followIds = new HashSet<>();
+        followIds.addAll(followService.getFollow(userId, null));
+
+        Map<Long, Boolean> map = new HashMap<>();
+        // 将已关注粉丝的 value 改为 true
+        for (Long fan : fans) {
+            map.put(fan, followIds.contains(fan));
+        }
+
+        Map<Long, User> userMap = getBaseInfoUserToMap(map.keySet());
+        ArrayList<User> users = new ArrayList<>();
+        for (Long fan : fans) {
+            User user = userMap.get(fan);
+            user.setEach(map.get(fan));
+            users.add(user);
+        }
+
+        page.setRecords(users);
+        page.setTotal(users.size());
+        return page;
+    }
+
+    @Override
+    public Page<User> getFollows(Long userId, BasePage basePage) {
+        Page<User> page = new Page<>();
+        // 获取关注列表
+        Collection<Long> followIds = followService.getFollow(userId, basePage);
+        if (ObjectUtils.isEmpty(followIds)) return page;
+
+        // 获取所有粉丝
+        HashSet<Long> fans = new HashSet<>();
+        fans.addAll(followService.getFans(userId, null));
+
+        Map<Long, Boolean> map = new HashMap<>();
+        for (Long followId : followIds) {
+            map.put(followId, fans.contains(followId));
+        }
+
+
+        final ArrayList<User> users = new ArrayList<>();
+        final Map<Long, User> userMap = getBaseInfoUserToMap(map.keySet());
+        // final List<Long> avatarIds = userMap.values().stream().map(User::getAvatar).collect(Collectors.toList());
+        for (Long followId : followIds) {
+            final User user = userMap.get(followId);
+            user.setEach(map.get(user.getId()));
+            users.add(user);
+        }
+        page.setRecords(users);
+        page.setTotal(users.size());
+
+        return page;
+    }
+
+    @Override
+    public void updateUser(UpdateUserVO user) {
+        if (user == null) return;
+
+        User u = new User();
+        BeanUtils.copyProperties(user,u);
+        this.update(u, new UpdateWrapper<User>().lambda().eq(User::getId, u.getId()));
+    }
+
+    // 将用户信息转为map，key为id
+    private Map<Long,User> getBaseInfoUserToMap(Collection<Long> userIds){
+        List<User> users = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(userIds)){
+            users = list(new LambdaQueryWrapper<User>().in(User::getId, userIds)
+                    .select(User::getId, User::getNickName, User::getDescription
+                            , User::getSex, User::getAvatar));
+        }
+        return users.stream().collect(Collectors.toMap(User::getId, Function.identity()));
     }
 }
