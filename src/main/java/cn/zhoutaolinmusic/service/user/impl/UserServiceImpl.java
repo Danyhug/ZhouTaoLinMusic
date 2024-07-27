@@ -4,8 +4,10 @@ import cn.zhoutaolinmusic.constant.RedisConstant;
 import cn.zhoutaolinmusic.entity.user.Favorites;
 import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.user.UserSubscribe;
+import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.FindPWVO;
+import cn.zhoutaolinmusic.entity.vo.ModelVO;
 import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
 import cn.zhoutaolinmusic.exception.BaseException;
@@ -18,6 +20,7 @@ import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.service.user.UserSubscribeService;
 import cn.zhoutaolinmusic.service.video.TypeService;
 import cn.zhoutaolinmusic.utils.RedisCacheUtil;
+import cn.zhoutaolinmusic.utils.UserHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -136,7 +139,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void subscribe(Set<Long> typeIds) {
+        if (ObjectUtils.isEmpty(typeIds)) return;
 
+        // 校验分类
+        Collection<VideoType> types = typeService.listByIds(typeIds);
+        if (types.size() != typeIds.size()) {
+            throw new BaseException("分类不存在");
+        }
+
+        Long userId = UserHolder.get();
+        ArrayList<UserSubscribe> userSubscribe = new ArrayList<>();
+        for (Long typeId : typeIds) {
+            UserSubscribe temp = new UserSubscribe();
+            temp.setTypeId(typeId);
+            temp.setUserId(userId);
+            userSubscribe.add(temp);
+        }
+        // 删除订阅的所有标签
+        userSubscribeService.remove(new LambdaQueryWrapper<UserSubscribe>().eq(UserSubscribe::getUserId, userId));
+        userSubscribeService.saveBatch(userSubscribe);
+
+        // 初始化模型
+        ModelVO modelVO = new ModelVO();
+        modelVO.setUserId(UserHolder.get());
+        // 获取分类下的标签
+        List<String> labels = new ArrayList<>();
+        for (VideoType type: types) {
+            labels.addAll(type.buildLabel());
+        }
+        modelVO.setLabels(labels);
+        initModel(modelVO);
+    }
+
+    /**
+     * 初始化模型
+     * @param modelVO
+     */
+    public void initModel(ModelVO modelVO) {
+        // 初始化模型
+        interestPushService.initUserModel(modelVO.getUserId(), modelVO.getLabels());
     }
 
     @Override
@@ -202,8 +243,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (ObjectUtils.isEmpty(typeIds)) return Collections.emptyList();
 
         // 根据分类id查询所有分类信息
-        final List<VideoType> types = typeService.list(new LambdaQueryWrapper<VideoType>()
+        List<VideoType> types = typeService.list(new LambdaQueryWrapper<VideoType>()
                 .in(VideoType::getId, typeIds).select(VideoType::getId, VideoType::getName, VideoType::getIcon));
         return types;
+    }
+
+    @Override
+    public Collection<VideoType> listNoSubscribeType(Long uid) {
+        if (uid == null) return Collections.emptyList();
+
+        // 获取所有用户订阅分类
+        List<Long> typeIds = userSubscribeService.list(new LambdaQueryWrapper<UserSubscribe>()).stream().map(UserSubscribe::getTypeId).collect(Collectors.toList());
+        // 获取所有分类
+        List<VideoType> types = typeService.list(null);
+
+        ArrayList<VideoType> result = new ArrayList<>();
+        for (VideoType type : types) {
+            // 获取用户未订阅的分类
+            if (!typeIds.contains(type.getId())) {
+                result.add(type);
+            }
+        }
+        return result;
     }
 }

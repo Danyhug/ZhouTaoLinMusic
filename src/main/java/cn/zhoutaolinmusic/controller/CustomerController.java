@@ -1,15 +1,18 @@
 package cn.zhoutaolinmusic.controller;
 
 import cn.zhoutaolinmusic.config.QiNiuConfig;
+import cn.zhoutaolinmusic.entity.user.Favorites;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
 import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.utils.Result;
 import cn.zhoutaolinmusic.utils.UserHolder;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ObjectUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
 
 @RestController
 @RequestMapping("/jjjmusic/customer")
@@ -43,4 +46,73 @@ public class CustomerController {
         return Result.ok(userService.getInfo(UserHolder.get()));
     }
 
+    /**
+     * 获取所有收藏夹
+     * @return
+     */
+    @GetMapping("/favorites")
+    public Result listFavorites() {
+        return Result.ok(favoritesService.listByUserId(UserHolder.get()));
+    }
+
+    /**
+     * 添加收藏夹 / 修改
+     * @param favorites
+     * @return
+     */
+    @PostMapping("/favorites")
+    public Result addFavorites(@RequestBody @Validated Favorites favorites) {
+        Long userId = UserHolder.get();
+        Long id = favorites.getId();
+        favorites.setUserId(userId);
+
+        int count = favoritesService.count(new LambdaQueryWrapper<Favorites>()
+                .eq(Favorites::getUserId, userId)
+                .eq(Favorites::getName, favorites.getName())
+                .eq(Favorites::getId, id)
+                .eq(Favorites::getDescription, favorites.getDescription()));
+
+        if (count != 0) return Result.error("已存在相同的收藏夹");
+
+        favoritesService.saveOrUpdate(favorites);
+        return Result.ok(id == null ? "添加成功" : "修改成功");
+    }
+
+    /**
+     * 订阅分类
+     * @param types
+     * @return
+     */
+    @PostMapping("/subscribe")
+    public Result subscribe(@RequestParam(required = false) String types) {
+        HashSet<Long> typeSet = new HashSet<>();
+        String msg = "取消订阅";
+
+        if (!ObjectUtils.isEmpty(types)) {
+            for (String s: types.split(",")) {
+                typeSet.add(Long.parseLong(s));
+            }
+            msg = "订阅成功";
+        }
+        userService.subscribe(typeSet);
+        return Result.ok(msg);
+    }
+
+    /**
+     * 获取用户订阅的分类
+     * @return
+     */
+    @GetMapping("/subscribe")
+    public Result listSubscribeType() {
+        return Result.ok(userService.listSubscribeType(UserHolder.get()));
+    }
+
+    /**
+     * 获取用户未订阅的分类
+     * @return
+     */
+    @GetMapping("/noSubscribe")
+    public Result listNoSubscribeType() {
+        return Result.ok(userService.listNoSubscribeType(UserHolder.get()));
+    }
 }

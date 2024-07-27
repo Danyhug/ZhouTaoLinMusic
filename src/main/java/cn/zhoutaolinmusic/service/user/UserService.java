@@ -128,6 +128,12 @@ public interface UserService extends IService<User> {
      */
     Collection<VideoType> listSubscribeType(Long uid);
 
+    /**
+     * 获取未订阅分类
+     * @return
+     */
+    Collection<VideoType> listNoSubscribeType(Long uid);
+
 
     // Collection<Type> listNoSubscribeType(Long aLong);
 }

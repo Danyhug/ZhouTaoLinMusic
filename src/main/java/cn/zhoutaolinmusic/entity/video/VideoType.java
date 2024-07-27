@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class VideoType extends BaseEntity {
     private Boolean used;
 
     public List<String> buildLabel(){
+        if (labelNames == null) return new ArrayList<>();
         return Arrays.asList(labelNames.split(","));
     }
 }
