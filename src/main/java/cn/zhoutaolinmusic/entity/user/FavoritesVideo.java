@@ -11,9 +11,6 @@ import java.io.Serializable;
  * <p>
  *  管理收藏夹下的视频
  * </p>
- *
- * @author xhy
- * @since 2023-10-30
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

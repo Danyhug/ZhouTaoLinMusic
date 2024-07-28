@@ -7,14 +7,6 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author xhy
- * @since 2023-10-24
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class RolePermission implements Serializable{

@@ -11,9 +11,6 @@ public class UserModel {
     private List<Model> models;
     private Long userId;
 
-
-
-
     public static UserModel buildUserModel(List<String> labels,Long videoId,Double score){
         final UserModel userModel = new UserModel();
         final ArrayList<Model> models = new ArrayList<>();

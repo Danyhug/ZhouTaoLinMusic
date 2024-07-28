@@ -9,14 +9,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 
-/**
- * <p>
- *  收藏夹
- * </p>
- *
- * @author xhy
- * @since 2023-10-30
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class Favorites extends BaseEntity {

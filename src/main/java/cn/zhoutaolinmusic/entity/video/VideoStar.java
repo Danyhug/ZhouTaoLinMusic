@@ -4,7 +4,6 @@ import cn.zhoutaolinmusic.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class VideoStar extends BaseEntity {

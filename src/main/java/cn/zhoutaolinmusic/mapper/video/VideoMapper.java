@@ -8,14 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author xhy
- * @since 2023-10-24
- */
 @Repository
 public interface VideoMapper extends BaseMapper<Video> {
 

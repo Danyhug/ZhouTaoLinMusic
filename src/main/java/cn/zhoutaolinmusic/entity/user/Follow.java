@@ -10,14 +10,6 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author xhy
- * @since 2023-10-25
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class Follow implements Serializable {

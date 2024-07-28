@@ -6,12 +6,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @description:
- * @Author: Xhy
- * @CreateTime: 2023-10-24 11:54
- */
-
 @Data
 public class BaseEntity implements Serializable {
 

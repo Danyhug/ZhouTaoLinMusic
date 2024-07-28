@@ -12,12 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p>
- *
- * </p>
  * 分类,隐藏视频标签
- * @author xhy
- * @since 2023-10-24
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

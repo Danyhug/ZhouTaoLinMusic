@@ -9,14 +9,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author xhy
- * @since 2023-10-24
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class User extends BaseEntity {

@@ -13,9 +13,6 @@ import java.util.Date;
  * <p>
  * 系统验证码
  * </p>
- *
- * @author xhy
- * @since 2023-10-25
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

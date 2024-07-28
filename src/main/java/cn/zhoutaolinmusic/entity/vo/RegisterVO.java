@@ -5,11 +5,6 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-/**
- * @description:
- * @Author: Xhy
- * @CreateTime: 2023-10-25 12:28
- */
 @Data
 public class RegisterVO {
 

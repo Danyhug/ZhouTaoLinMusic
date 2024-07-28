@@ -9,11 +9,6 @@ import cn.zhoutaolinmusic.entity.vo.RegisterVO;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @description:
- * @Author: Xhy
- * @CreateTime: 2023-11-04 12:38
- */
 public interface LoginService {
 
     /**
