@@ -2,6 +2,7 @@ package cn.zhoutaolinmusic.controller.admin;
 
 import cn.zhoutaolinmusic.authority.Authority;
 import cn.zhoutaolinmusic.constant.AuditStatus;
+import cn.zhoutaolinmusic.entity.user.User;
 import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.BasePage;
@@ -15,7 +16,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import cn.zhoutaolinmusic.entity.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +77,7 @@ public class AdminVideoController {
             video.setOpenName(video.getOpen() ? "私密" : "公开");
             video.setTypeName(typeMap.get(video.getTypeId()));
         }
-        // TODO return Result.ok(records.count(page.getTotal()));
-        return null;
+        return Result.ok(page.getRecords(), page.getTotal());
     }
 
     /**

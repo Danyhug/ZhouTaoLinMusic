@@ -6,7 +6,6 @@ import cn.zhoutaolinmusic.entity.user.Permission;
 import cn.zhoutaolinmusic.service.user.PermissionService;
 import cn.zhoutaolinmusic.utils.Result;
 import cn.zhoutaolinmusic.utils.UserHolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

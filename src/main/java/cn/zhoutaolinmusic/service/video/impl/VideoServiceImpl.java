@@ -327,13 +327,14 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void auditProcess(Video video) {
+        video.setAuditStatus(0);
         // 审核通过
         this.updateById(video);
         // 添加到兴趣推送
         interestPushService.pushSystemStockIn(video);
         interestPushService.pushSystemTypeStockIn(video);
 
-        // 审核状态添加到邮箱 TODO
+        // TODO 审核状态添加到邮箱
         // feedService.pushInBoxFeed(video.getUserId(), video.getId(), video.getGmtCreated().getTime());
     }
 
@@ -624,6 +625,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void violations(Long id) {
-
+        Video video = this.getOne(new LambdaQueryWrapper<Video>().eq(Video::getId, id));
+        video.setAuditStatus(1);
+        this.updateById(video);
     }
 }

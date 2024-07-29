@@ -16,6 +16,8 @@ public class Result<T> implements Serializable {
     private String message;
     // 返回数据
     private Object data;
+    // 返回的数据总数
+    private long count;
 
     public static <T> Result<T> ok() {
         Result<T> result = new Result<>();
@@ -38,6 +40,15 @@ public class Result<T> implements Serializable {
         result.setCode(0);
         result.setState(true);
         result.setData(data);
+        return result;
+    }
+
+    public static <T> Result<T> ok(T data, long count) {
+        Result<T> result = new Result<>();
+        result.setCode(0);
+        result.setState(true);
+        result.setData(data);
+        result.setCount(count);
         return result;
     }
 
