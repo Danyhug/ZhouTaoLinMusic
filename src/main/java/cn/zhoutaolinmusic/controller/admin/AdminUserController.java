@@ -56,21 +56,28 @@ public class AdminUserController {
         wrapper.like(name != null, User::getEmail, name);
         IPage<User> page = userService.page(basePage.page(), wrapper);
 
+        // 先查是什么角色，获取id，生成map < userId, [角色id] >
         // 查出用户角色中间表 用户ID，用户ID对应的权限ID
         Map<Long, List<UserRole>> userRoleMap =  userRoleService.list(null).stream().collect(Collectors.groupingBy(UserRole::getUserId));
+
+        // 根据查出来的id查询他是什么角色（查出具体的管理员啥的）
         // 根据角色查出角色表信息
         Map<Long, String> roleMap = roleService.list(null).stream().collect(Collectors.toMap(Role::getId, Role::getName));
 
         Map<Long, Set<String>> map = new HashMap<>();
+        // 遍历上面的用户id对应的角色id
         userRoleMap.forEach((uid, rIds) -> {
+            // uid是用户id rIds是角色 id 集合
             Set<String> roles = new HashSet<>();
             for (UserRole rId: rIds) {
+                // 按角色id查出角色名称
                 roles.add(roleMap.get(rId.getRoleId()));
             }
             map.put(uid, roles);
         });
 
         for (User user: page.getRecords()) {
+            // 为每一个用户添加角色信息
             user.setRoleName(map.get(user.getId()));
         }
         return Result.ok(page.getRecords(), page.getTotal());
