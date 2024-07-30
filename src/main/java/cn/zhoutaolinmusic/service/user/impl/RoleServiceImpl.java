@@ -2,12 +2,14 @@ package cn.zhoutaolinmusic.service.user.impl;
 
 import cn.zhoutaolinmusic.authority.Authority;
 import cn.zhoutaolinmusic.entity.user.Role;
+import cn.zhoutaolinmusic.entity.user.RolePermission;
 import cn.zhoutaolinmusic.entity.user.Tree;
 import cn.zhoutaolinmusic.entity.user.UserRole;
 import cn.zhoutaolinmusic.entity.vo.AssignRoleVO;
 import cn.zhoutaolinmusic.entity.vo.AuthorityVO;
 import cn.zhoutaolinmusic.mapper.user.RoleMapper;
 import cn.zhoutaolinmusic.service.user.PermissionService;
+import cn.zhoutaolinmusic.service.user.RolePermissionService;
 import cn.zhoutaolinmusic.service.user.RoleService;
 import cn.zhoutaolinmusic.service.user.UserRoleService;
 import cn.zhoutaolinmusic.utils.Result;
@@ -32,6 +34,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private RolePermissionService rolePermissionService;
 
     @Override
     public List<Tree> tree() {
@@ -80,7 +85,22 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public Result gavePermission(AuthorityVO authorityVO) {
-        return null;
+        try{
+            rolePermissionService.remove(new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getRoleId,authorityVO.getRid()));
+            List<RolePermission> list = new ArrayList<>();
+            Integer rid = authorityVO.getRid();
+            for (Integer pId : authorityVO.getPid()) {
+                RolePermission rolePermission = new RolePermission();
+                rolePermission.setRoleId(rid);
+                rolePermission.setPermissionId(pId);
+                list.add(rolePermission);
+            }
+            rolePermissionService.saveBatch(list);
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return Result.error("分配权限失败");
+        }
+        return Result.ok("分配权限成功");
     }
 
     @Override

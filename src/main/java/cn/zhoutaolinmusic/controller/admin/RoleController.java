@@ -2,9 +2,11 @@ package cn.zhoutaolinmusic.controller.admin;
 
 import cn.zhoutaolinmusic.authority.Authority;
 import cn.zhoutaolinmusic.entity.user.Role;
+import cn.zhoutaolinmusic.entity.user.RolePermission;
 import cn.zhoutaolinmusic.entity.user.Tree;
 import cn.zhoutaolinmusic.entity.user.UserRole;
 import cn.zhoutaolinmusic.entity.vo.AssignRoleVO;
+import cn.zhoutaolinmusic.entity.vo.AuthorityVO;
 import cn.zhoutaolinmusic.entity.vo.BasePage;
 import cn.zhoutaolinmusic.service.user.RolePermissionService;
 import cn.zhoutaolinmusic.service.user.RoleService;
@@ -103,5 +105,31 @@ public class RoleController {
         IPage iPage = basePage.page();
         IPage page = roleService.page(iPage, wrapper);
         return Result.ok(page.getRecords(), page.getTotal());
+    }
+
+
+    /**
+     * 获取角色权限
+     * @param id
+     * @return
+     */
+    @GetMapping("/getPermission/{id}")
+    @Authority("role:getPermission")
+    public Integer[] getPermission(@PathVariable Integer id){
+        Integer[] list = rolePermissionService.list(new LambdaQueryWrapper<RolePermission>().eq(RolePermission::getRoleId,id).select(RolePermission::getPermissionId))
+                .stream().map(RolePermission::getPermissionId).toArray(Integer[]::new);
+        return list;
+    }
+
+    /**
+     * 给角色分配权限
+     * @param authorityVO
+     * @return
+     * 给角色分配权限前先把该角色的权限都删了
+     */
+    @PostMapping("/authority")
+    @Authority("role:authority")
+    public Result authority(@RequestBody AuthorityVO authorityVO){
+        return roleService.gavePermission(authorityVO);
     }
 }
