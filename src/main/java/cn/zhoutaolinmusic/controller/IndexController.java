@@ -146,4 +146,9 @@ public class IndexController {
     public Result<Video> getVideoById(@PathVariable Long id, HttpServletRequest request) {
         return Result.ok(videoService.getVideoById(id, JwtUtils.getUserId(request)));
     }
+
+    @GetMapping("/video/type/{id}")
+    public Result<Collection<Video>> listVideoByTypeId(@PathVariable Long id) {
+        return Result.ok(videoService.getVideoByTypeId(id));
+    }
 }

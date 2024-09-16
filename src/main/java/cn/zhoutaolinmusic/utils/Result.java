@@ -43,6 +43,14 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static <T> Result<T> send(T data) {
+        Result<T> result = new Result<>();
+        result.setCode(0);
+        result.setState(true);
+        result.setData(data);
+        return result;
+    }
+
     public static <T> Result<T> ok(T data, long count) {
         Result<T> result = new Result<>();
         result.setCode(0);

@@ -1,6 +1,5 @@
 package cn.zhoutaolinmusic.service.user.impl;
 
-import cn.zhoutaolinmusic.authority.Authority;
 import cn.zhoutaolinmusic.entity.user.Role;
 import cn.zhoutaolinmusic.entity.user.RolePermission;
 import cn.zhoutaolinmusic.entity.user.Tree;
@@ -15,7 +14,6 @@ import cn.zhoutaolinmusic.service.user.UserRoleService;
 import cn.zhoutaolinmusic.utils.Result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

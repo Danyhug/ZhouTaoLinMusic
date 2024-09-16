@@ -68,7 +68,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         }
 
         String uuid = UUID.randomUUID().toString();
-        String url = qiNiuConfig.getCname() + "/" + file.getFileKey() + "?uuid=" + uuid;
+        String url = qiNiuConfig.getCname() + "/" + file.getFileKey() + "&uuid=" + uuid;
         log.info("转换后的文件 url: {}", url);
 
         // 文件 uuid 存储到缓存中

@@ -6,7 +6,7 @@ spring:
     time-zone: GMT+8
   datasource:
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://${DATASOURCE_HOST:127.0.0.1:3306}/${DATASOURCE_NAME:lucky-journey}?serverTimezone=GMT%2B8
+    url: jdbc:p6spy:mysql://${DATASOURCE_HOST:127.0.0.1:30306}/${DATASOURCE_NAME:lucky-journey}?serverTimezone=GMT%2B8
     username: ${DATASOURCE_USER:root}
     password: ${DATASOURCE_PASSWORD:root}
   mail:

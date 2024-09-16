@@ -42,7 +42,7 @@ public class FileController {
      */
     @GetMapping("/getToken")
     public Result<String> token() {
-        return Result.ok(qiNiuConfig.uploadToken());
+        return Result.send(qiNiuConfig.uploadToken());
     }
 
     /**
