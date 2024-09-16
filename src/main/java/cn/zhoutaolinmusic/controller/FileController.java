@@ -59,12 +59,6 @@ public class FileController {
     public void getFileUrl(HttpServletRequest request, HttpServletResponse response,
                                      @PathVariable Long fileId) throws IOException
         {
-            // 判断请求来源
-            // String referer = request.getHeader("Referer");
-            // if (referer == null || !referer.contains("jjjmusic.cn")) {
-            //     response.sendError(403, "非法请求");
-            //     return;
-            // }
             File file = fileService.getFileTrustUrl(fileId);
 
             // 设置响应类型

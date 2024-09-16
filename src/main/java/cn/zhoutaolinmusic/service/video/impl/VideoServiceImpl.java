@@ -512,6 +512,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
         // 根据标签获取视频id
         Set<Long> videoIds = (Set<Long>) interestPushService.listVideoIdByLabels(labelNames);
+        if (ObjectUtils.isEmpty(videoIds)) return Collections.emptyList();
 
         // 推荐的视频不要有当前的视频
         videoIds.remove(video.getId());
