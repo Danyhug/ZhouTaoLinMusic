@@ -329,9 +329,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUser(UpdateUserVO user) {
         if (user == null) return;
 
+        Long uid = UserHolder.get();
         User u = new User();
-        BeanUtils.copyProperties(user,u);
-        this.update(u, new UpdateWrapper<User>().lambda().eq(User::getId, u.getId()));
+        BeanUtils.copyProperties(user, u);
+        this.update(u, new UpdateWrapper<User>().lambda().eq(User::getId, uid));
     }
 
     // 将用户信息转为map，key为id

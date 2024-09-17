@@ -295,4 +295,4 @@ watch(() => props.videoList, () => {
 watch(currentVideo, playVideo)
 
 
-</script>   
+</script>

@@ -37,7 +37,7 @@ public class VideoController {
      * @return
      */
     @PostMapping("")
-    @Limit(limit = 5, time = 3600L, msg = "每小时最多可发布5条视频")
+    @Limit(limit = 10, time = 3600L, msg = "每小时最多可发布10条视频")
     public Result<String> publishVideo(@RequestBody @Validated Video video) {
         videoService.publishVideo(video);
         return Result.ok("已成功发布，请等待审核");

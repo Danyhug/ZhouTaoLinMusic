@@ -369,7 +369,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
      */
     public void updateStar(Video video, Long value) {
         UpdateWrapper<Video> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.setSql("start_count = start_count + #{value}");
+        updateWrapper.setSql("start_count = start_count +" + value);
         updateWrapper.lambda().eq(Video::getId, video.getId()).eq(Video::getStartCount, video.getStartCount());
         this.update(video, updateWrapper);
     }

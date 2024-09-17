@@ -65,7 +65,7 @@
                         <div class="pa-4 text-center" style="color: greenyellow;">
                             <v-icon :size="60">mdi-check-circle</v-icon>
                             <h3 class="text-h6 font-weight-light mb-2">
-                                欢迎来到抖鸭
+                                欢迎来到JJJMUSIC
                             </h3>
                             <span class="text-caption text-grey">Thanks for signing up!</span>
                         </div>

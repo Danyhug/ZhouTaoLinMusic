@@ -3,6 +3,7 @@ package cn.zhoutaolinmusic.service.video.impl;
 import cn.zhoutaolinmusic.entity.video.VideoStar;
 import cn.zhoutaolinmusic.mapper.video.VideoStarMapper;
 import cn.zhoutaolinmusic.service.video.VideoStarService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,15 @@ import java.util.List;
 public class VideoStarServiceImpl extends ServiceImpl<VideoStarMapper, VideoStar> implements VideoStarService {
     @Override
     public boolean starVideo(VideoStar videoStar) {
-        return false;
+        try {
+            // 添加概率
+            this.save(videoStar);
+        }catch (Exception e){
+            // 存在则取消点赞
+            this.remove(new LambdaQueryWrapper<VideoStar>().eq(VideoStar::getVideoId,videoStar.getVideoId()).eq(VideoStar::getUserId,videoStar.getUserId()));
+            return false;
+        }
+        return true;
     }
 
     @Override

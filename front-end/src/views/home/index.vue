@@ -24,7 +24,7 @@ const route = useRoute()
 const searchVideoInfo = ref(null)
 const pageInfo = ref({
   page: 1,
-  limit: 15
+  limit: 6
 })
 const dialog = computed(() => searchVideoInfo.value ? true : false)
 // 获取分类视频
@@ -115,4 +115,17 @@ onUnmounted(() => {
   window.removeEventListener('scroll', listenScroll);
 })
 </script>
-<style scoped></style>
+<style>
+.v-row >.v-col {
+  min-width: 50%;
+}
+
+.v-row >.v-col-sm-6 {
+  max-width: 25%!important;
+  min-width: 0;
+}
+
+.v-row--dense > .v-col {
+  padding: 6px!important;
+}
+</style>
