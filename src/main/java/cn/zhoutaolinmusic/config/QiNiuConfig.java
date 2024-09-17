@@ -23,7 +23,7 @@ public class QiNiuConfig {
      */
     private String bucketName;
 
-    public String cname;
+    private String cname;
     public String videoUrl;
     public String imageUrl;
 

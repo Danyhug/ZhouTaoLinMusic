@@ -3,6 +3,7 @@ package cn.zhoutaolinmusic.entity.video;
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.BaseEntity;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
+import cn.zhoutaolinmusic.service.video.VideoService;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +22,6 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = false)
 public class Video extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
-    @Autowired
-    @TableField(exist = false)
-    private QiNiuConfig qiNiuConfig;
 
     // YV ID 以YV+UUID
     private String yv;
@@ -115,16 +112,5 @@ public class Video extends BaseEntity {
         return Arrays.stream(this.labelNames.split(","))
                 .collect(Collectors.toList());
     }
-
-    // 和get方法分开，避免发生歧义
-    public String buildVideoUrl(){
-        return qiNiuConfig.getCname() + "/" + this.url;
-    }
-
-    public String buildCoverUrl(){
-        return qiNiuConfig.getCname() + "/" + this.cover;
-    }
-
-
 }
 

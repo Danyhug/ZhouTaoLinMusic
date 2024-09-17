@@ -106,7 +106,7 @@ public class InterestPushServiceImpl implements InterestPushService {
                 String score = modelMap.get(model.getLabel()).toString();
                 // 增加得分
                 modelMap.put(
-                        model.getLabel(), Double.parseDouble(score + model.getScore())
+                        model.getLabel(), Double.parseDouble(score) + model.getScore()
                 );
                 // 获取更新后的得分
                 Double newScore = (Double) modelMap.get(model.getLabel());

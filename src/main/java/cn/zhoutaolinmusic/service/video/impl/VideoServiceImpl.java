@@ -109,6 +109,15 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         return video;
     }
 
+    public String buildVideoUrl(Long url){
+        return qiNiuConfig.getCname() + "/" + url;
+    }
+
+    public String buildCoverUrl(Long cover){
+        return qiNiuConfig.getCname() + "/" + cover;
+    }
+
+
     @Override
     public void publishVideo(Video video) {
         Long userId = UserHolder.get();
@@ -120,10 +129,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             oldVideo = this.getOne(new LambdaQueryWrapper<Video>().eq(Video::getId, videoId).eq(Video::getUserId, userId));
 
             // 不允许修改视频封片和视频源
-            if (!oldVideo.buildVideoUrl().equals(video.buildVideoUrl())
-                    || !video.buildCoverUrl().equals(oldVideo.buildCoverUrl())) {
-                throw new BaseException("视频源和封面不能修改");
-            }
+            // if (!buildVideoUrl(oldVideo.getUrl()).equals(video.buildVideoUrl())
+            //         || !buildCoverUrl(video.getUrl()).equals(oldVideo.buildCoverUrl())) {
+            //     throw new BaseException("视频源和封面不能修改");
+            // }
         }
 
         // 校验标签最多不能超过5个
@@ -144,7 +153,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         if (!isAdd) {
             // 修改时，下面字段不被修改，设置为空
             video.setVideoType(null);
-            video.setLabelNames(null);
+            // video.setLabelNames(null);
             video.setUrl(null);
             video.setCover(null);
         } else {
@@ -273,6 +282,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             userVO.setNickName(user.getNickName());
             userVO.setDescription(user.getDescription());
             userVO.setSex(user.getSex());
+            // 获取用户头像
+            userVO.setAvatar(user.getAvatar());
             // 视频关联用户信息
             video.setUser(userVO);
             // 视频关联文件信息
