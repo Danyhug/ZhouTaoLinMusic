@@ -180,7 +180,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean follows(Long followsUserId) {
-        return false;
+
+        final Long userId = UserHolder.get();
+
+        return followService.follows(followsUserId,userId);
     }
 
     @Override

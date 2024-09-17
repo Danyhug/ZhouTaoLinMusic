@@ -596,16 +596,18 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public Collection<Video> followFeed(Long userId, Long lastTime) {
-        // 查看redis中是否存在
-        Set<Long> set = redisTemplate.opsForZSet().reverseRangeByScore(
-                RedisConstant.IN_FOLLOW + userId,
-                    0, lastTime == null ? new Date().getTime() : lastTime, lastTime == null ? 0 : 1, 5);
-        // 缓存中不存在
-        if (ObjectUtils.isEmpty(set)) return Collections.emptyList();
+        // 获取本人的关注列表
+        Collection<Long> followIds = followService.getFollow(userId, null);
+
+        // 根据关注id获取所有
+        // 视频id
+        List<Video> videos = videoMapper.selectList(new LambdaQueryWrapper<Video>().in(Video::getUserId, followIds));
+        System.out.println("所有视频信息");
+        System.out.println(videos);
 
         // 查到的数据按时间排序
-        Collection<Video> videos = this.list(new LambdaQueryWrapper<Video>()
-                .in(Video::getId, set).orderByDesc(Video::getGmtCreated));
+        // Collection<Video> videos = this.list(new LambdaQueryWrapper<Video>()
+        //         .in(Video::getId, set).orderByDesc(Video::getGmtCreated));
         addVideosDetailInfo(videos);
 
         return videos;

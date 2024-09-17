@@ -145,6 +145,18 @@ public class CustomerController {
     }
 
     /**
+     * 关注/取关
+     * @param followsUserId
+     * @return
+     */
+    @PostMapping("/follows")
+    public Result follows(@RequestParam Long followsUserId){
+
+        return Result.ok(userService.follows(followsUserId) ? "已关注" : "已取关");
+    }
+
+
+    /**
      * 修改用户信息
      * @param user
      * @return
