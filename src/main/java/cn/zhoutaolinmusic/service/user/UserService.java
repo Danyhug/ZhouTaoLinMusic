@@ -152,4 +152,6 @@ public interface UserService extends IService<User> {
      * @param user
      */
     void updateUser(UpdateUserVO user);
+
+    void updateUserModel(UserModel userModel);
 }

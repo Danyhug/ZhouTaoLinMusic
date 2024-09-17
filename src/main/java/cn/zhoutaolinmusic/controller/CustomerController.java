@@ -3,7 +3,9 @@ package cn.zhoutaolinmusic.controller;
 import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.user.Favorites;
 import cn.zhoutaolinmusic.entity.vo.BasePage;
+import cn.zhoutaolinmusic.entity.vo.Model;
 import cn.zhoutaolinmusic.entity.vo.UpdateUserVO;
+import cn.zhoutaolinmusic.entity.vo.UserModel;
 import cn.zhoutaolinmusic.service.user.FavoritesService;
 import cn.zhoutaolinmusic.service.user.UserService;
 import cn.zhoutaolinmusic.utils.Result;
@@ -14,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashSet;
 
 @RestController
@@ -150,5 +153,23 @@ public class CustomerController {
     public Result updateUser(@RequestBody @Validated UpdateUserVO user){
         userService.updateUser(user);
         return Result.ok("修改成功");
+    }
+
+
+    /**
+     * 用户停留时长修改模型
+     * @param model
+     * @return
+     */
+    @PostMapping("/updateUserModel")
+    public Result updateUserModel(@RequestBody Model model){
+        final Double score = model.getScore();
+        if (score == -0.5 || score == 1.0){
+            final UserModel userModel = new UserModel();
+            userModel.setUserId(UserHolder.get());
+            userModel.setModels(Collections.singletonList(model));
+            userService.updateUserModel(userModel);
+        }
+        return Result.ok();
     }
 }

@@ -1,6 +1,7 @@
 package cn.zhoutaolinmusic.controller;
 
 import cn.zhoutaolinmusic.entity.video.Video;
+import cn.zhoutaolinmusic.entity.video.VideoShare;
 import cn.zhoutaolinmusic.entity.video.VideoType;
 import cn.zhoutaolinmusic.entity.vo.BasePage;
 import cn.zhoutaolinmusic.entity.vo.HotVideo;
@@ -150,5 +151,25 @@ public class IndexController {
     @GetMapping("/video/type/{id}")
     public Result<Collection<Video>> listVideoByTypeId(@PathVariable Long id) {
         return Result.ok(videoService.getVideoByTypeId(id));
+    }
+
+
+    /**
+     * 分享视频
+     * @param videoId
+     * @param request
+     * @return
+     */
+    @PostMapping("/share/{videoId}")
+    public Result share(@PathVariable Long videoId, HttpServletRequest request){
+        final VideoShare videoShare = new VideoShare();
+
+        videoShare.setVideoId(videoId);
+        videoShare.setIp(null);
+        if (JwtUtils.checkToken(request)) {
+            videoShare.setUserId(JwtUtils.getUserId(request));
+        }
+        videoService.shareVideo(videoShare);
+        return Result.ok();
     }
 }

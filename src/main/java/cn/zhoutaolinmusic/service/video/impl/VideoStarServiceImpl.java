@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VideoStarServiceImpl extends ServiceImpl<VideoStarMapper, VideoStar> implements VideoStarService {
@@ -26,11 +27,13 @@ public class VideoStarServiceImpl extends ServiceImpl<VideoStarMapper, VideoStar
 
     @Override
     public List<Long> getStarUserIds(Long videoId) {
-        return null;
+        return this.list(new LambdaQueryWrapper<VideoStar>().eq(VideoStar::getVideoId,videoId)).stream().map(VideoStar::getUserId).collect(Collectors.toList());
     }
 
     @Override
     public Boolean starState(Long videoId, Long userId) {
-        return null;
+        if (userId == null) return  false;
+
+        return this.count(new LambdaQueryWrapper<VideoStar>().eq(VideoStar::getVideoId,videoId).eq(VideoStar::getUserId,userId)) == 1;
     }
 }

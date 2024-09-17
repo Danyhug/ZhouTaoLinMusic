@@ -335,6 +335,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         this.update(u, new UpdateWrapper<User>().lambda().eq(User::getId, uid));
     }
 
+    @Override
+    public void updateUserModel(UserModel userModel) {
+        interestPushService.updateUserModel(userModel);
+    }
+
     // 将用户信息转为map，key为id
     private Map<Long,User> getBaseInfoUserToMap(Collection<Long> userIds){
         List<User> users = new ArrayList<>();
