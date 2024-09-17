@@ -541,7 +541,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public List<Video> selectNDaysAgeVideo(long id, int days, int limit) {
-        return null;
+        return videoMapper.selectNDaysAgeVideo(id, days, limit);
     }
 
     @Override
@@ -557,7 +557,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         map.put(RedisConstant.HOT_VIDEO + (today - 1), 3);
         map.put(RedisConstant.HOT_VIDEO + (today - 2), 2);
 
-        List<Long> hotVideoIds = redisTemplate.executePipelined((RedisCallback<?>) connection -> {
+        List<ArrayList<Long>> hotVideoIds = redisTemplate.executePipelined((RedisCallback<?>) connection -> {
             // 传入key为当天日期，value为获取当天的几个视频，最后获取的是当天的视频列表
             map.forEach((key, value) -> {
                 connection.sRandMember(key.getBytes(), value);
@@ -569,9 +569,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         if (ObjectUtils.isEmpty(hotVideoIds)) return Collections.emptyList();
 
         ArrayList<Long> videoIds = new ArrayList<>();
-        for (Object hotVideoId : hotVideoIds) {
-            if (!ObjectUtils.isEmpty(hotVideoId)) {
-                videoIds.addAll(Arrays.asList((Long[]) hotVideoId));
+        for (ArrayList<Long> hotVideoId : hotVideoIds) {
+            if (!ObjectUtils.isEmpty(hotVideoId) || !hotVideoId.isEmpty()) {
+                videoIds.addAll(hotVideoId);
             }
         }
 

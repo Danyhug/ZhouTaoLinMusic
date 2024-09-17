@@ -13,6 +13,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,6 +42,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         videoFile.setType(type.contains("video") ? "视频" : "图片");
         videoFile.setUserId(userId);
         videoFile.setSize(videoFileInfo.fsize);
+        videoFile.setGmtCreated(new Date());
+        videoFile.setGmtUpdated(new Date());
         this.save(videoFile);
 
         return videoFile.getId();
