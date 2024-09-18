@@ -183,7 +183,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         final Long userId = UserHolder.get();
 
-        return followService.follows(followsUserId,userId);
+        return followService.follows(followsUserId, userId);
     }
 
     @Override
@@ -312,7 +312,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         for (Long followId : followIds) {
             map.put(followId, fans.contains(followId));
         }
-
 
         final ArrayList<User> users = new ArrayList<>();
         final Map<Long, User> userMap = getBaseInfoUserToMap(map.keySet());

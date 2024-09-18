@@ -42,12 +42,12 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
 
     @Override
     public int getFollowCount(Long userId) {
-        return 0;
+        return count(new LambdaQueryWrapper<Follow>().eq(Follow::getUserId, userId));
     }
 
     @Override
     public int getFansCount(Long userId) {
-        return 0;
+        return count(new LambdaQueryWrapper<Follow>().eq(Follow::getFollowId, userId));
     }
 
     @Override
@@ -71,7 +71,22 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
 
     @Override
     public Collection<Long> getFans(Long userId, BasePage basePage) {
-        return null;
+        if (basePage == null) {
+            final Set<Object> set = redisCacheUtil.getSortList(RedisConstant.USER_FANS + userId);
+            if(ObjectUtils.isEmpty(set)){
+                return Collections.EMPTY_SET;
+            }
+            return set.stream().map(o->Long.valueOf(o.toString())).collect(Collectors.toList());
+        }
+        final Set<ZSetOperations.TypedTuple<Object>> typedTuples = redisCacheUtil.getSortListByPage(RedisConstant.USER_FANS + userId, basePage.getPage(), basePage.getLimit());
+        if (ObjectUtils.isEmpty(typedTuples)) {
+            final List<Follow> follows = page(basePage.page(),new LambdaQueryWrapper<Follow>().eq(Follow::getFollowId, userId)).getRecords();
+            if (ObjectUtils.isEmpty(follows)){
+                return Collections.EMPTY_LIST;
+            }
+            return follows.stream().map(Follow::getUserId).collect(Collectors.toList());
+        }
+        return typedTuples.stream().map(t -> Long.parseLong(t.getValue().toString())).collect(Collectors.toList());
     }
 
     @Override
