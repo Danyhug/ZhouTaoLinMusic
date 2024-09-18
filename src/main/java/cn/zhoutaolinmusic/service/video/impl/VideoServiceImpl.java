@@ -500,7 +500,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 // 获取视频信息 id 、title
                 hotVideo = objectMapper.readValue(objectTypedTuple.getValue().toString(), HotVideo.class);
                 // 获取热点值
-                hotVideo.setHot((double) objectTypedTuple.getScore().intValue());
+                hotVideo.setHot(objectTypedTuple.getScore());
                 // 将热点值格式化为字符串
                 hotVideo.hotFormat();
                 hotVideos.add(hotVideo);
