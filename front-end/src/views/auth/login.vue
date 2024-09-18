@@ -15,8 +15,9 @@
   </div>
 </template>
 <script setup>
-import { reactive, ref } from 'vue';
-import { apiAuth } from '../../apis/user/auth';
+import {reactive, ref} from 'vue';
+import {apiAuth} from '../../apis/user/auth';
+
 const {showMessage, closeEvent} = defineProps({
   showMessage: {
     type: Function,

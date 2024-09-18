@@ -75,10 +75,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { apiFileGet } from '../../apis/file';
-import { useUserStore } from '../../stores';
+import {onMounted, ref, watch} from 'vue';
+import {apiFileGet} from '../../apis/file';
+import {useUserStore} from '../../stores';
 import strUtils from '../../utils/strUtil';
+
 const showDescription = ref(false)
 const userStore = useUserStore()
 const props = defineProps({

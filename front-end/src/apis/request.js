@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useUserStore } from '../stores';
+import {useUserStore} from '../stores';
+
 const instance = axios.create({
   baseURL: "/api",
   timeout: 1000000,

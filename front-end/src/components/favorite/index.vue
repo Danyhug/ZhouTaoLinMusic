@@ -32,9 +32,10 @@
     </v-dialog>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
-import { apiFavoriteVideo, apiGetFavorites } from '../../apis/user/favorites';
+import {ref, watch} from 'vue';
+import {apiFavoriteVideo, apiGetFavorites} from '../../apis/user/favorites';
 import FavoriteEdit from './edit.vue';
+
 const dialog = ref(false)
 const dialogm1 = ref(0)
 const favoriteItems = ref([])

@@ -1,13 +1,10 @@
 package cn.zhoutaolinmusic.entity.video;
 
-import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.BaseEntity;
 import cn.zhoutaolinmusic.entity.vo.UserVO;
-import cn.zhoutaolinmusic.service.video.VideoService;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 

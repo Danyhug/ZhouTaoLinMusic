@@ -24,10 +24,11 @@
   </v-navigation-drawer>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { apiClassifyGetAll } from '../../apis/classify';
-import { apiFileGet } from '../../apis/file';
-import { useUserStore } from '../../stores';
+import {ref} from 'vue';
+import {apiClassifyGetAll} from '../../apis/classify';
+import {apiFileGet} from '../../apis/file';
+import {useUserStore} from '../../stores';
+
 const userStore = useUserStore()
 const allClassifyList = ref([])
 apiClassifyGetAll().then(({ data }) => {

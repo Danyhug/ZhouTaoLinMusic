@@ -29,11 +29,12 @@
     </VLayout>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
-import { apiGetFavorites } from '../../../apis/user/favorites';
-import { apiGetVideoByFavoriteId } from '../../../apis/video';
+import {computed, onMounted, ref, watch} from 'vue';
+import {apiGetFavorites} from '../../../apis/user/favorites';
+import {apiGetVideoByFavoriteId} from '../../../apis/video';
 import FavoriteEdit from '../../../components/favorite/edit.vue';
 import VideoList from '../../../components/video/list.vue';
+
 const favoriteItems = ref([])
 const videoList = ref([])
 const currentFavoriteIndex = ref([0])

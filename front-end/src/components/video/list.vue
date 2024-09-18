@@ -35,10 +35,11 @@
     </v-card>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiVideoHotRank } from '../../apis/video';
+import {onMounted, ref} from 'vue';
+import {apiVideoHotRank} from '../../apis/video';
 import VideoCard from './card.vue';
 import Video from './index.vue';
+
 const { videoList, noDataMsg, showHot } = defineProps({
     videoList: {
         type: Object,

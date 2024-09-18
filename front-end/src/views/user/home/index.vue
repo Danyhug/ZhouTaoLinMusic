@@ -10,10 +10,11 @@
     </v-card>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
-import { apiGetUserVideoById } from '../../../apis/video';
+import {ref, watch} from 'vue';
+import {apiGetUserVideoById} from '../../../apis/video';
 import VideoListVue from '../../../components/video/list.vue';
-import { useUserStore } from '../../../stores';
+import {useUserStore} from '../../../stores';
+
 const userStore = useUserStore()
 const videoList = ref([])
 const pageInfo = ref({

@@ -4,9 +4,10 @@
     </v-card>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiVideoByPush } from '../../apis/video.js';
+import {onMounted, ref} from 'vue';
+import {apiVideoByPush} from '../../apis/video.js';
 import Video from '../../components/video/index.vue';
+
 const videoList = ref([])
 const nextVideo = (idnex) =>{
     if((videoList.value.length - idnex) <= 3) {

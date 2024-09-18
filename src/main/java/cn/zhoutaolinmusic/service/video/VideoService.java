@@ -1,6 +1,5 @@
 package cn.zhoutaolinmusic.service.video;
 
-import cn.zhoutaolinmusic.config.QiNiuConfig;
 import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.entity.video.VideoShare;
 import cn.zhoutaolinmusic.entity.vo.BasePage;

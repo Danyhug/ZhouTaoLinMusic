@@ -14,8 +14,8 @@
     </v-card>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiVideoHotRank } from '../apis/video';
+import {onMounted, ref} from 'vue';
+import {apiVideoHotRank} from '../apis/video';
 
 const rankList = ref([])
 onMounted(() => {

@@ -17,7 +17,7 @@ public class UserModel {
         userModel.setUserId(UserHolder.get());
         for (String label : labels) {
             final Model model = new Model();
-            model.setLabel(label);
+            model.setLabels(label);
             model.setScore(score);
             model.setVideoId(videoId);
             models.add(model);

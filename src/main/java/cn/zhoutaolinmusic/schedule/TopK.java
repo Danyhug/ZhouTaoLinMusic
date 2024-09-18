@@ -2,7 +2,10 @@ package cn.zhoutaolinmusic.schedule;
 
 import cn.zhoutaolinmusic.entity.vo.HotVideo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
 
 public class TopK {
 

@@ -2,7 +2,6 @@ package cn.zhoutaolinmusic.schedule;
 
 import cn.zhoutaolinmusic.constant.AuditStatus;
 import cn.zhoutaolinmusic.constant.RedisConstant;
-import cn.zhoutaolinmusic.entity.Setting;
 import cn.zhoutaolinmusic.entity.video.Video;
 import cn.zhoutaolinmusic.entity.vo.HotVideo;
 import cn.zhoutaolinmusic.service.SettingService;

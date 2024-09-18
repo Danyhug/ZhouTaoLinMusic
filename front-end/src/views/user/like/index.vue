@@ -45,10 +45,11 @@
   </v-card>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
-import { apiFileGet } from '../../../apis/file';
-import { apiFollows, apiGetLike } from '../../../apis/user/like';
-import { useUserStore } from '../../../stores';
+import {ref, watch} from 'vue';
+import {apiFileGet} from '../../../apis/file';
+import {apiFollows, apiGetLike} from '../../../apis/user/like';
+import {useUserStore} from '../../../stores';
+
 const currentType = ref("fans")
 const currentItems = ref([])
 const snackbar = ref({

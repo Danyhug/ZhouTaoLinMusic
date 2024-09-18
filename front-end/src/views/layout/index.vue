@@ -11,9 +11,10 @@
   </v-app>
 </template>
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import defaultHeader from './header.vue';
 import navigation from './navigation.vue';
+
 const leftMenu = ref(true)
 const clickEvent = (type,data)=>{
   switch(type) {

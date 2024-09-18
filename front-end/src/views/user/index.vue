@@ -67,12 +67,13 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { apiFileGet, apiUploadFile } from '../../apis/file';
-import { apiChangeUserInfo, apiGetUserInfo } from '../../apis/user/user';
+import {computed, onMounted, ref, watch} from 'vue';
+import {useRoute} from 'vue-router';
+import {apiFileGet, apiUploadFile} from '../../apis/file';
+import {apiChangeUserInfo, apiGetUserInfo} from '../../apis/user/user';
 import router from '../../router';
-import { useUserStore } from '../../stores';
+import {useUserStore} from '../../stores';
+
 const tab = ref()
 const userStore = useUserStore()
 const route = useRoute()

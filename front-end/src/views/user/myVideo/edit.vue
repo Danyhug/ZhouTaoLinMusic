@@ -52,10 +52,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
-import { apiClassifyGetAll } from '../../../apis/classify';
-import { apiFileGet, apiUploadFile } from '../../../apis/file';
-import { apiVideoPush } from '../../../apis/user/videoManger';
+import {computed, onMounted, ref} from 'vue';
+import {apiClassifyGetAll} from '../../../apis/classify';
+import {apiFileGet, apiUploadFile} from '../../../apis/file';
+import {apiVideoPush} from '../../../apis/user/videoManger';
+
 const avatarFileRef = ref()
 const uploading = ref(-1)
 const allClassifyList = ref([])

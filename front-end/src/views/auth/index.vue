@@ -33,14 +33,15 @@
   </v-dialog>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiGetUserInfo } from '../../apis/user/user';
-import { apiInitFollowFeed } from '../../apis/video';
+import {onMounted, ref} from 'vue';
+import {apiGetUserInfo} from '../../apis/user/user';
+import {apiInitFollowFeed} from '../../apis/video';
 import router from '../../router';
-import { useUserStore } from '../../stores';
+import {useUserStore} from '../../stores';
 import forget from './forget.vue';
 import login from './login.vue';
 import register from './register.vue';
+
 const userStroe = useUserStore()
 const dialog = ref(false)
 const isLogin = ref(0)

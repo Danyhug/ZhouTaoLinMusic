@@ -7,10 +7,11 @@
     </VContainer>
 </template>
 <script setup>
-import { nextTick, onMounted, ref } from 'vue';
-import { apiClassifySubscribe, apiGetClassifyByUser, apiGetNoSubscribe } from '../../../apis/classify';
+import {nextTick, onMounted, ref} from 'vue';
+import {apiClassifySubscribe, apiGetClassifyByUser, apiGetNoSubscribe} from '../../../apis/classify';
 import AllClassify from './all.vue';
 import MyClassify from './my.vue';
+
 const allClassifyList = ref([])
 const myClassifyList = ref([])
 const refreshData = ()=>{

@@ -86,9 +86,10 @@
     </div>
 </template>
 <script setup>
-import { reactive, ref } from 'vue';
-import { apiAuth, apiCheckCode, apiGetCode } from '../../apis/user/auth';
+import {reactive, ref} from 'vue';
+import {apiAuth, apiCheckCode, apiGetCode} from '../../apis/user/auth';
 import buildUtils from '../../utils/buildUtil';
+
 const step = ref(1)
 const stepData = ref({
     1: {

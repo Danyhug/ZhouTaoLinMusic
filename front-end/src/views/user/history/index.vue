@@ -7,8 +7,8 @@
   </v-card>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiGetHistoryVideo } from '../../../apis/video';
+import {onMounted, ref} from 'vue';
+import {apiGetHistoryVideo} from '../../../apis/video';
 import VideoList from '../../../components/video/list.vue';
 
 const items = ref([])

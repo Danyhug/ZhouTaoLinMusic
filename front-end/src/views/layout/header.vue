@@ -43,11 +43,12 @@
   </v-app-bar>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { apiGetUserSearchHistory } from '../../apis/user/user';
+import {onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {apiGetUserSearchHistory} from '../../apis/user/user';
 import hotList from '../../components/hotList.vue';
 import auth from '../auth/index.vue';
+
 const { clickEvent } = defineProps({
   clickEvent: {
     type: Function,

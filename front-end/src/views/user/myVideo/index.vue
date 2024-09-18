@@ -19,9 +19,10 @@
     </v-card>
 </template>
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import UploadVideo from './upVideo.vue';
 import videoList from './videoList.vue';
+
 const tab = ref(0)
 const items = ref([
     '上传稿件', '稿件管理'

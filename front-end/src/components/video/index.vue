@@ -61,13 +61,21 @@
   </v-layout>
 </template>
 <script setup>
-import { computed, getCurrentInstance, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { apiFileGet } from '../../apis/file';
-import { apiFollows } from '../../apis/user/like';
-import { apiAddHistory, apiGetVideoBySimilar, apiInitFollowFeed, apiSetUserVideoModel, apiShareVideo, apiStarVideo } from '../../apis/video';
+import {computed, getCurrentInstance, nextTick, onMounted, onUnmounted, ref, watch} from 'vue';
+import {apiFileGet} from '../../apis/file';
+import {apiFollows} from '../../apis/user/like';
+import {
+  apiAddHistory,
+  apiGetVideoBySimilar,
+  apiInitFollowFeed,
+  apiSetUserVideoModel,
+  apiShareVideo,
+  apiStarVideo
+} from '../../apis/video';
 import FavoriteCom from '../../components/favorite/index.vue';
 import VideoCard from '../../components/video/card.vue';
 import strUtils from '../../utils/strUtil';
+
 const props = defineProps({
   videoInfo: {
     type: Object,

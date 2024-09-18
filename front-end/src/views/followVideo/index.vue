@@ -20,9 +20,10 @@
     </v-card>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiGetFollowVideo } from '../../apis/video.js';
+import {onMounted, ref} from 'vue';
+import {apiGetFollowVideo} from '../../apis/video.js';
 import Video from '../../components/video/index.vue';
+
 const videoList = ref([])
 
 const nextVideo = (idnex) =>{

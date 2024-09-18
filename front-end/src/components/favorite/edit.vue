@@ -21,8 +21,9 @@
     </v-dialog>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue';
-import { apiRemoveFavorite, apiSaveFavorite } from '../../apis/user/favorites';
+import {computed, ref, watch} from 'vue';
+import {apiRemoveFavorite, apiSaveFavorite} from '../../apis/user/favorites';
+
 const dialog = ref(false)
 const props = defineProps({
     editData: {

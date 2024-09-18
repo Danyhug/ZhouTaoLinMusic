@@ -16,12 +16,12 @@
                             <VListItem>
                                 <VBtn color="primary" @click="videoFileRef.click()">上传视频</VBtn>
                             </VListItem>
-                            <VListItem>
+                            <!-- <VListItem>
                                 <v-chip class="ma-2 font-weight-bold" color="green" label>
                                     <v-icon start :icon="'mdi-file-cloud-outline'"></v-icon>
                                     审核队列: {{ queueState }}
                                 </v-chip>
-                            </VListItem>
+                            </VListItem> -->
                         </VList>
                         <div style="display: none;">
                             <form>
@@ -95,10 +95,11 @@
     </v-card>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue';
-import { apiUploadFile } from '../../../apis/file';
-import { apiGetAuditQueueState } from '../../../apis/video';
+import {computed, onMounted, ref} from 'vue';
+import {apiUploadFile} from '../../../apis/file';
+import {apiGetAuditQueueState} from '../../../apis/video';
 import VideoEdit from './edit.vue';
+
 const snackbar = ref({
     show: false,
     text: ""
@@ -112,7 +113,7 @@ const items = ref([
     },
     {
         image: 'https://cdn.vuetifyjs.com/docs/images/chips/cpu.png',
-        title: '发布视频后会进行视频审核。(七牛云服务自动审核)',
+        title: '发布视频后需要等待进行视频审核。',
         category: '审核',
     },
     {

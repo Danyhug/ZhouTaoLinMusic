@@ -9,13 +9,14 @@
   </v-container>
 </template>
 <script setup>
-import { computed, onMounted, onUnmounted, onUpdated, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { apiGetClassifyByUser } from '../../apis/classify';
-import { apiGetVideoById, apiSearchVideo, apiVideoByClassfiy } from '../../apis/video';
+import {computed, onMounted, onUnmounted, onUpdated, ref, watch} from 'vue';
+import {useRoute} from 'vue-router';
+import {apiGetClassifyByUser} from '../../apis/classify';
+import {apiGetVideoById, apiSearchVideo, apiVideoByClassfiy} from '../../apis/video';
 import Video from '../../components/video/index.vue';
 import VideoListVue from '../../components/video/list.vue';
 import router from "../../router/index.js";
+
 const userClassifys = ref([])
 const isLoading = ref(true)
 const videoList = ref([])

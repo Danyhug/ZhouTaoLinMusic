@@ -1,5 +1,6 @@
 import * as qiniu from 'qiniu-js'
 import request from './request'
+
 const apiFileGetToken = async() => await request.get("/file/getToken")
 const Config = {
     qiniuOSS: {}

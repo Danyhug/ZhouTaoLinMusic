@@ -405,7 +405,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void historyVideo(Long videoId, Long userId) throws Exception {
-        String key = RedisConstant.HISTORY_VIDEO + userId;
+        String key = RedisConstant.HISTORY_VIDEO + videoId + ":" + userId;
         Object o = redisCacheUtil.get(key);
 
         // 因为是有序集合，key值不可重复，所以说只需要添加一次就可以了

@@ -76,12 +76,13 @@
     </v-card>
 </template>
 <script setup>
-import { onMounted, onUpdated, ref, watch } from 'vue';
-import { apiFileGet } from '../../../apis/file';
-import { apiRemoveVideo } from '../../../apis/user/videoManger';
-import { apiGetVideoByUser } from '../../../apis/video';
+import {onMounted, onUpdated, ref, watch} from 'vue';
+import {apiFileGet} from '../../../apis/file';
+import {apiRemoveVideo} from '../../../apis/user/videoManger';
+import {apiGetVideoByUser} from '../../../apis/video';
 import Video from '../../../components/video/index.vue';
 import VideoEdit from './edit.vue';
+
 const pageInfo = ref({
     page: 1,
     pages: 0
