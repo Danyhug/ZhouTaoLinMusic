@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -346,7 +347,20 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         interestPushService.pushSystemTypeStockIn(video);
 
         // TODO 审核状态添加到邮箱
-        // feedService.pushInBoxFeed(video.getUserId(), video.getId(), video.getGmtCreated().getTime());
+        feedService.pushInBoxFeed(video.getUserId(), video.getId(), video.getGmtCreated().getTime());
+    }
+
+    // 缓存预热
+    @Scheduled(initialDelay = 1000, fixedDelay = 24 * 60 * 60 * 1000)
+    public void initCache() {
+        // 获取所有视频
+        Collection<Video> videos = this.list(new LambdaQueryWrapper<>());
+        // 遍历所有视频id
+        for (Video video: videos) {
+            interestPushService.pushSystemStockIn(video);
+            interestPushService.pushSystemTypeStockIn(video);
+        }
+        System.out.println("缓存预热完成");
     }
 
     @Override
